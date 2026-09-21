@@ -1,0 +1,71 @@
+{
+  "cells": [
+    [
+      "B",
+      101,
+      "static"
+    ],
+    [
+      "A",
+      101,
+      "static"
+    ],
+    [
+      "B",
+      102,
+      "early"
+    ],
+    [
+      "A",
+      102,
+      "early"
+    ],
+    [
+      "A",
+      103,
+      "late"
+    ],
+    [
+      "B",
+      103,
+      "late"
+    ],
+    [
+      "B",
+      104,
+      "early"
+    ],
+    [
+      "A",
+      104,
+      "early"
+    ],
+    [
+      "A",
+      105,
+      "late"
+    ],
+    [
+      "B",
+      105,
+      "late"
+    ]
+  ],
+  "duration_s": 12.0,
+  "diagnostic": false,
+  "task": "joint-space reach",
+  "observation_hz": 20,
+  "physics_hz": 1000,
+  "control_wall_hz": 100,
+  "max_observation_age_s": 5,
+  "change_times_s": {
+    "static": null,
+    "early": 0.25,
+    "late": 2
+  },
+  "success": "max joint error <0.04rad for final 0.25 seconds",
+  "scope": "integration pilot; no semantic non-inferiority evidence; no physical hardware",
+  "A_model": "gpt-6-astra",
+  "A_reasoning": "low",
+  "B_model": "jev-1.13.0"
+}

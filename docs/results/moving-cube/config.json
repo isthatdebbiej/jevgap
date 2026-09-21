@@ -1,0 +1,17 @@
+{
+  "duration_s": 18.0,
+  "diagnostic": false,
+  "systems": {
+    "A": "Native GaP + Astra",
+    "B": "GaP + Jev + custom Rust executor"
+  },
+  "models": {
+    "A": "gpt-6-astra (low reasoning)",
+    "B": "jev-1.13.0"
+  },
+  "moving_cube_command_speed_m_s": 0.008,
+  "cube_mass_kg": 0.04,
+  "cube_side_m": 0.036,
+  "controller": "shared live-state tracking after model authorization",
+  "collision_model": "experimental primitive finger pads, elliptic friction contacts; not validated hardware geometry"
+}

@@ -1,0 +1,39 @@
+{
+  "system": "A",
+  "seed": 103,
+  "condition": "late",
+  "diagnostic_only": false,
+  "task": "ground-truth joint-space reach, not grasp or semantic quality benchmark",
+  "success": true,
+  "workflow_samples": 6,
+  "failures": [],
+  "physics_error": null,
+  "wall_s": 12.000190822,
+  "sim_s": 11.999999999998789,
+  "real_time_factor": 0.9999840984194299,
+  "workflow_ms": [
+    1790.342693,
+    2063.385444,
+    2950.764908,
+    2005.9787,
+    1789.790464,
+    1572.898425
+  ],
+  "sensor_to_admission_ms": [
+    1792.814964,
+    2959.185435,
+    2016.789876,
+    1807.399001
+  ],
+  "change_to_fresh_dispatch_ms": 5209.902531,
+  "change_to_reach_ms": 5870.079403,
+  "rejections": {
+    "stale_scene": 1,
+    "episode_ended": 1
+  },
+  "admitted_proposals": 4,
+  "age_budget_s": 5,
+  "deadline_misses": 0,
+  "no_current_target_fraction": 0.5841666666666666,
+  "starvation_definition": "fraction of control ticks without an admitted plan for the current scene; previous movement may continue"
+}

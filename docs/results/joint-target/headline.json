@@ -1,0 +1,29 @@
+{
+  "A": {
+    "success": 5,
+    "attempts": 5,
+    "workflow_ms_median_of_episode_medians": 1739.571991,
+    "fresh_response_ms_median": 3975.040298,
+    "changed_trials": 4,
+    "cost_usd": 0.13091,
+    "calls": 29,
+    "rejections": {
+      "expired": 1,
+      "episode_ended": 5,
+      "stale_scene": 4
+    }
+  },
+  "B": {
+    "success": 5,
+    "attempts": 5,
+    "workflow_ms_median_of_episode_medians": 305.05257800000004,
+    "fresh_response_ms_median": 519.9521500000001,
+    "changed_trials": 4,
+    "cost_usd": 0.003918348,
+    "calls": 119,
+    "rejections": {
+      "episode_ended": 4,
+      "stale_scene": 2
+    }
+  }
+}

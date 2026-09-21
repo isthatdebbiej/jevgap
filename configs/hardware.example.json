@@ -1,0 +1,14 @@
+{
+  "status": "inventory template only; no hardware runner implemented",
+  "arm_variant": "yam",
+  "gripper": "linear_4310",
+  "can_channel": "can0",
+  "camera_intrinsics_file": null,
+  "camera_to_base_transform_file": null,
+  "approved_controller_config_file": null,
+  "scene_change_definition": null,
+  "observation_age_budget_ms": null,
+  "workspace_limits_file": null,
+  "owner_verified_stop_procedure": false,
+  "dispatch_enabled": false
+}

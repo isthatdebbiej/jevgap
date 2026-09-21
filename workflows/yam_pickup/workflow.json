@@ -1,0 +1,13 @@
+{
+  "version": 3,
+  "meta": {"name": "yam_sim_proposals", "description": "Read state, obtain a decision, return a joint-target proposal. No actuator access."},
+  "nodes": {
+    "state": {"type": "tool", "tool": "bench.prepare", "inputs": {"state": {"$ref": "in.state"}}},
+    "decision": {"type": "tool", "tool": "bench.decision", "inputs": {"state": {"$ref": "state.state"}}},
+    "proposal": {"type": "tool", "tool": "bench.proposal", "inputs": {"decision": {"$ref": "decision.decision"}}},
+    "done": {"type": "end", "status": "success"}
+  },
+  "edges": [["START","state"],["state","decision"],["decision","proposal"],["proposal","done"]],
+  "conditional_edges": {},
+  "subgraphs": {}
+}

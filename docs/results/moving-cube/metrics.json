@@ -1,0 +1,20 @@
+{
+  "A": {
+    "confirmed_pickup_s": 8.790200743,
+    "first_lift_threshold_s": 6.620630023,
+    "success_and_retained_at_end": true,
+    "authorization_s": 3.534591893,
+    "workflow_ms": 3533.746351,
+    "real_time_factor": 0.9999873639929493,
+    "cube_displacement_before_close_mm": 21.091435000001958
+  },
+  "B": {
+    "confirmed_pickup_s": 5.416225297,
+    "first_lift_threshold_s": 3.669213944,
+    "success_and_retained_at_end": true,
+    "authorization_s": 0.305077082,
+    "workflow_ms": 302.502957,
+    "real_time_factor": 0.9999857128707369,
+    "cube_displacement_before_close_mm": 2.5073066009157348
+  }
+}

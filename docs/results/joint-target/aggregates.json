@@ -1,0 +1,126 @@
+{
+  "cells": [
+    {
+      "condition": "static",
+      "system": "A",
+      "attempted": 1,
+      "success": 1,
+      "success_ci95": [
+        20.654329147389294,
+        100.0
+      ],
+      "median_episode_workflow_ms": 2683.191841,
+      "workflow_median_ci95": null,
+      "fresh_responses": 0,
+      "changed_trials": 0,
+      "median_fresh_response_ms": null,
+      "fresh_response_ci95": null,
+      "median_real_time_factor": 0.9999720602805487
+    },
+    {
+      "condition": "static",
+      "system": "B",
+      "attempted": 1,
+      "success": 1,
+      "success_ci95": [
+        20.654329147389294,
+        100.0
+      ],
+      "median_episode_workflow_ms": 294.2648635,
+      "workflow_median_ci95": null,
+      "fresh_responses": 0,
+      "changed_trials": 0,
+      "median_fresh_response_ms": null,
+      "fresh_response_ci95": null,
+      "median_real_time_factor": 0.9999765864647722
+    },
+    {
+      "condition": "early",
+      "system": "A",
+      "attempted": 2,
+      "success": 2,
+      "success_ci95": [
+        34.23719528896193,
+        100.0
+      ],
+      "median_episode_workflow_ms": 1704.1908265,
+      "workflow_median_ci95": null,
+      "fresh_responses": 2,
+      "changed_trials": 2,
+      "median_fresh_response_ms": 3940.0366795,
+      "fresh_response_ci95": null,
+      "median_real_time_factor": 0.9999781719036921
+    },
+    {
+      "condition": "early",
+      "system": "B",
+      "attempted": 2,
+      "success": 2,
+      "success_ci95": [
+        34.23719528896193,
+        100.0
+      ],
+      "median_episode_workflow_ms": 305.461958,
+      "workflow_median_ci95": null,
+      "fresh_responses": 2,
+      "changed_trials": 2,
+      "median_fresh_response_ms": 574.9266580000001,
+      "fresh_response_ci95": null,
+      "median_real_time_factor": 0.9999704797881173
+    },
+    {
+      "condition": "late",
+      "system": "A",
+      "attempted": 2,
+      "success": 2,
+      "success_ci95": [
+        34.23719528896193,
+        100.0
+      ],
+      "median_episode_workflow_ms": 1816.9411245000001,
+      "workflow_median_ci95": null,
+      "fresh_responses": 2,
+      "changed_trials": 2,
+      "median_fresh_response_ms": 4414.9564955,
+      "fresh_response_ci95": null,
+      "median_real_time_factor": 0.9999809688718844
+    },
+    {
+      "condition": "late",
+      "system": "B",
+      "attempted": 2,
+      "success": 2,
+      "success_ci95": [
+        34.23719528896193,
+        100.0
+      ],
+      "median_episode_workflow_ms": 297.71608549999996,
+      "workflow_median_ci95": null,
+      "fresh_responses": 2,
+      "changed_trials": 2,
+      "median_fresh_response_ms": 429.913157,
+      "fresh_response_ci95": null,
+      "median_real_time_factor": 0.9999783284361057
+    }
+  ],
+  "paired": [
+    {
+      "condition": "static",
+      "paired_n": 1,
+      "median_workflow_difference_ms": -2388.9269775,
+      "ci95": null
+    },
+    {
+      "condition": "early",
+      "paired_n": 2,
+      "median_workflow_difference_ms": -1398.7288684999999,
+      "ci95": null
+    },
+    {
+      "condition": "late",
+      "paired_n": 2,
+      "median_workflow_difference_ms": -1519.225039,
+      "ci95": null
+    }
+  ]
+}

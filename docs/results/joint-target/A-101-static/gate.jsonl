@@ -1,0 +1,6 @@
+{"kind": "reject", "time_ns": 128205216929, "reason": "expired", "decision": "replan", "age_ms": 7039.401931}
+{"kind": "admission", "time_ns": 129844501030, "reason": null, "decision": "replan", "age_ms": 1478.717682}
+{"kind": "dispatch", "time_ns": 129845697805, "decision": "replan", "age_ms": 1479.914457}
+{"kind": "admission", "time_ns": 132086720052, "reason": null, "decision": "continue", "age_ms": 2071.055362}
+{"kind": "dispatch", "time_ns": 132086963162, "decision": "continue", "age_ms": 2071.298472}
+{"kind": "reject", "time_ns": 135614551118, "reason": "episode_ended", "decision": "continue", "age_ms": 3348.827776}

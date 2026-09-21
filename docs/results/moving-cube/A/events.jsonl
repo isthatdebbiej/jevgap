@@ -1,0 +1,6 @@
+{"kind": "proposal", "decision": "replan", "reason": null, "wall_s": 3.534591893}
+{"kind": "phase", "phase": "approach", "wall_s": 3.535070364}
+{"kind": "phase", "phase": "descend", "wall_s": 3.606332237}
+{"kind": "phase", "phase": "close", "wall_s": 3.840166802}
+{"kind": "phase", "phase": "lift", "wall_s": 4.841113894}
+{"kind": "phase", "phase": "hold", "wall_s": 8.790200743}

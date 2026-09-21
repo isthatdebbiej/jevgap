@@ -1,0 +1,17 @@
+[project]
+name = "jevgap"
+version = "0.1.0"
+description = "Native GaP and custom Rust execution experiments for embodied decision systems"
+requires-python = ">=3.12,<3.13"
+readme = "README.md"
+license = "Apache-2.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["scripts"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E9", "F63", "F7", "F82"]

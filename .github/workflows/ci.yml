@@ -1,0 +1,19 @@
+name: Checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.98.1
+      - name: System dependencies
+        run: sudo apt-get update && sudo apt-get install -y libegl1 libgl1 libglfw3
+      - name: Pinned environment
+        run: bash scripts/setup.sh
+      - name: Offline checks (no API credentials)
+        run: bash scripts/check.sh

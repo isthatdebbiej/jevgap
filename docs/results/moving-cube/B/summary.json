@@ -1,0 +1,15 @@
+{
+  "system": "B",
+  "diagnostic": false,
+  "pickup_s": 3.669213944,
+  "success_s": 5.416225297,
+  "success": true,
+  "error": null,
+  "model_calls": 1,
+  "final_phase": "hold",
+  "final_cube_z": 0.20289747773187328,
+  "physics_s": 17.999999999999016,
+  "wall_s": 18.000257172,
+  "pickup_definition": "cube center >5cm above table with both finger contacts; success holds for 300 physics steps",
+  "controller": "common live-state tracking controller after model authorization; no welded or scripted lift"
+}

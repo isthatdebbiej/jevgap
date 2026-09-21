@@ -1,0 +1,13 @@
+{"kind": "detected_change", "time_ns": 152472395006, "scene_version": 1}
+{"kind": "reject", "time_ns": 153844642451, "reason": "stale_scene", "decision": "replan", "age_ms": 1621.97147}
+{"kind": "admission", "time_ns": 156019043368, "reason": null, "decision": "replan", "age_ms": 1996.773972}
+{"kind": "dispatch", "time_ns": 156022398229, "decision": "replan", "age_ms": 2000.128833}
+{"kind": "admission", "time_ns": 157888404321, "reason": null, "decision": "continue", "age_ms": 1715.989204}
+{"kind": "dispatch", "time_ns": 157892234953, "decision": "continue", "age_ms": 1719.819836}
+{"kind": "admission", "time_ns": 159638492942, "reason": null, "decision": "continue", "age_ms": 1566.340684}
+{"kind": "dispatch", "time_ns": 159642270187, "decision": "continue", "age_ms": 1570.117929}
+{"kind": "admission", "time_ns": 161551796752, "reason": null, "decision": "continue", "age_ms": 1729.223208}
+{"kind": "dispatch", "time_ns": 161552366514, "decision": "continue", "age_ms": 1729.79297}
+{"kind": "admission", "time_ns": 163523512850, "reason": null, "decision": "continue", "age_ms": 1801.147367}
+{"kind": "dispatch", "time_ns": 163532404669, "decision": "continue", "age_ms": 1810.039186}
+{"kind": "reject", "time_ns": 165226677653, "reason": "episode_ended", "decision": "continue", "age_ms": 1504.387874}
