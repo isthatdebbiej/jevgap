@@ -1,0 +1,30 @@
+{
+  "diagnostic": true,
+  "live": false,
+  "perception": "camera",
+  "pairs": 1,
+  "duration": 12.0,
+  "change_s": 1.0,
+  "age_s": 5,
+  "lease_s": 5,
+  "worker_delay_s": 0.4,
+  "decision_interval_s": 0.2,
+  "max_calls": 30,
+  "seed": 42,
+  "order": [
+    [
+      0,
+      "B"
+    ],
+    [
+      0,
+      "A"
+    ]
+  ],
+  "source_sha256": {
+    "continuous.py": "360a127fd64edbfa9dad6d9bd8b2f5edb96a308789d8bfa570e08b592eca0344",
+    "moving_cube.py": "2fb72abde2cbb9c366a927caaea097d00daaf68894ff3d13b4aa3476edb1deeb",
+    "executors.py": "b9ff9d3bb7bc55032cc6ddcabba5eab00765452ecb2cfa6f4a4366cc59ee2d0c",
+    "camera_state.py": "183e8bb7a1d9ad2809d3b73f1ffadc1bdd35438f17b3967cc7856e73f678aeb4"
+  }
+}

@@ -1,0 +1,114 @@
+[
+  {
+    "pair": 0,
+    "system": "B",
+    "diagnostic": true,
+    "perception": "camera",
+    "success": false,
+    "success_s": null,
+    "pickup_s": null,
+    "physics_s": 11.999999999998789,
+    "wall_s": 44.241731472,
+    "real_time_factor": 0.2712371238814066,
+    "attempts": 30,
+    "completed_workflows": 30,
+    "failures": [],
+    "physics_error": null,
+    "replaced_pending_observations": 209,
+    "pending_at_end": 1,
+    "call_limit_reached": true,
+    "gate_rejections": {
+      "stale_scene": 1
+    },
+    "paused_tick_fraction": 1.0,
+    "change_to_fresh_dispatch_ms": null,
+    "change_without_fresh_dispatch": true,
+    "workflow_ms": {
+      "n": 30,
+      "p50": 412.13513,
+      "p95": 422.16047315
+    },
+    "decision_worker_ms": {
+      "n": 30,
+      "p50": 400.478518,
+      "p95": 405.28767625
+    },
+    "eligible_to_start_ms": {
+      "n": 90,
+      "p50": 1.292568,
+      "p95": 2.30649515
+    },
+    "sensor_to_gate_ms": {
+      "n": 29,
+      "p50": 792.597487,
+      "p95": 1345.1925577999991
+    },
+    "perception_ms": {
+      "n": 240,
+      "p50": 177.523608,
+      "p95": 246.13321975
+    },
+    "perception_position_error_m": {
+      "n": 0,
+      "p50": null,
+      "p95": null
+    },
+    "missing_perception_frames": 240,
+    "change_detection": "scripted simulator direction-change event; not a camera motion-change detector"
+  },
+  {
+    "pair": 0,
+    "system": "A",
+    "diagnostic": true,
+    "perception": "camera",
+    "success": false,
+    "success_s": null,
+    "pickup_s": null,
+    "physics_s": 11.999999999998789,
+    "wall_s": 48.998748838,
+    "real_time_factor": 0.24490421254781977,
+    "attempts": 30,
+    "completed_workflows": 30,
+    "failures": [],
+    "physics_error": null,
+    "replaced_pending_observations": 209,
+    "pending_at_end": 1,
+    "call_limit_reached": true,
+    "gate_rejections": {},
+    "paused_tick_fraction": 1.0,
+    "change_to_fresh_dispatch_ms": null,
+    "change_without_fresh_dispatch": true,
+    "workflow_ms": {
+      "n": 30,
+      "p50": 489.23754599999995,
+      "p95": 545.6349597999999
+    },
+    "decision_worker_ms": {
+      "n": 30,
+      "p50": 400.491959,
+      "p95": 408.2641665
+    },
+    "eligible_to_start_ms": {
+      "n": 90,
+      "p50": 24.895819,
+      "p95": 42.498466599999986
+    },
+    "sensor_to_gate_ms": {
+      "n": 30,
+      "p50": 808.4222575,
+      "p95": 1519.0277044999987
+    },
+    "perception_ms": {
+      "n": 240,
+      "p50": 183.395169,
+      "p95": 237.25071244999998
+    },
+    "perception_position_error_m": {
+      "n": 0,
+      "p50": null,
+      "p95": null
+    },
+    "missing_perception_frames": 240,
+    "change_detection": "scripted simulator direction-change event; not a camera motion-change detector"
+  }
+]

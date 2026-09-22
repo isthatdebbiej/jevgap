@@ -87,6 +87,7 @@ class Pickup:
         ET.SubElement(
             contact, "pair", geom1="table", geom2="cube_geom", friction=".005 .005 .001 .0001 .0001", condim="3"
         )
+        ET.SubElement(wb, "camera", name="bench_camera", pos=".32 -.5 .55", xyaxes="1 0 0 0 .625 .781", fovy="45")
         tree.write(out / "scene.xml")
         self.m = mujoco.MjModel.from_xml_path(str(out / "scene.xml"))
         self.d = mujoco.MjData(self.m)
@@ -168,12 +169,19 @@ class Pickup:
         self.phase_at = t
         self.events.append({"kind": "phase", "phase": phase, "wall_s": t})
 
-    def step(self, t):
+    def step(self, t, target_position=None, allow_tracking=True):
+        saved_phase = self.phase
+        if not allow_tracking:
+            self.phase = "waiting"
+            self.lift_counter = 0
+            self.bilateral_since = None
+            self.phase_at += max(0, t - getattr(self, "last_step_t", t))
+        self.last_step_t = t
         cube = self.d.xpos[self.cube].copy()
         bilateral = self.contacts()
         if self.accepted and self.phase == "waiting":
             self.transition("approach", t)
-        pos = cube.copy()
+        pos = cube.copy() if target_position is None else np.array(target_position, dtype=float)
         pos[2] = TOP + 0.10
         if self.phase == "approach" and np.linalg.norm(self.d.site_xpos[self.site] - pos) < 0.008:
             self.transition("descend", t)
@@ -188,7 +196,7 @@ class Pickup:
             elif self.bilateral_since is None:
                 self.bilateral_since = t
             if self.bilateral_since is not None and t - self.bilateral_since > 0.3 and t - self.phase_at > 1:
-                self.lift_xy = cube[:2].copy()
+                self.lift_xy = pos[:2].copy()
                 self.transition("lift", t)
         if self.phase in {"lift", "hold"}:
             self.grip = min(0.0475, float(np.mean(self.d.qpos[6:8])) + 0.0005)
@@ -216,8 +224,12 @@ class Pickup:
         # It is never welded, teleported, or parented to the gripper.
         self.d.xfrc_applied[self.cube, :] = 0
         if self.phase not in {"lift", "hold"} and not bilateral:
-            self.d.xfrc_applied[self.cube, 1] = np.clip(0.8 * (0.008 - self.d.qvel[9]), -0.03, 0.03)
+            self.d.xfrc_applied[self.cube, 1] = np.clip(
+                0.8 * (getattr(self, "drive_speed", 0.008) - self.d.qvel[9]), -0.03, 0.03
+            )
         mujoco.mj_step(self.m, self.d)
+        if not allow_tracking:
+            self.phase = saved_phase
         if not np.isfinite(self.d.qpos).all():
             raise ValueError("nonfinite state")
 

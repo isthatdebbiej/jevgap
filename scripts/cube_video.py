@@ -52,6 +52,11 @@ def main():
                     "B": "B · GaP + Jev + custom Rust executor",
                     "diagnostic": "Local controller development",
                 }[s]
+                if summary.get("diagnostic") and s in {"A", "B"}:
+                    label = {
+                        "A": "A · Native GaP + local test worker",
+                        "B": "B · GaP + custom Rust executor + local test worker",
+                    }[s]
                 draw.text((18, 12), label, font=font, fill="white")
                 stamp = summary["success_s"]
                 done = stamp is not None and t >= stamp

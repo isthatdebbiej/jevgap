@@ -178,3 +178,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
 Project code is licensed under [Apache-2.0](LICENSE). GaP, I2RT and other
 dependencies retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
 This project is independent of the upstream projects and model providers.
+
+## Continuous-loop development
+
+See [the continuous benchmark](docs/continuous.md) for repeated decisions, stale-response rejection, latency breakdowns and an experimental camera-derived state path. Offline checks use identical local workers and are separate from the Astra/Jev results above.

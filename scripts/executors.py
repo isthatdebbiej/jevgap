@@ -158,7 +158,9 @@ class Workers:
         else:
             time.sleep(self.config.get("diagnostic_delay_s", 0))
             decision = {
-                "decision": "replan" if state["scene_version"] != state["committed_scene_version"] else "continue"
+                "decision": "reperceive"
+                if not state.get("observation_valid", True)
+                else ("replan" if state["scene_version"] != state["committed_scene_version"] else "continue")
             }
         if not isinstance(decision, dict) or set(decision) != {"decision"} or decision["decision"] not in DECISIONS:
             raise ValueError("provider must return exactly one valid decision enum")
@@ -200,7 +202,7 @@ class Native:
         from gap.runtime.executor import WorkflowExecutor
         from gap_core.tools import ToolRegistry
 
-        compile_workflow(workflow)
+        self.nodes = compile_workflow(workflow)
         self.workers = Workers(config)
         self.outputs = {}
         self.events = []
@@ -217,9 +219,19 @@ class Native:
             result = fn(*args, **kwargs)
             end = time.monotonic_ns()
             self.outputs[name] = result
-            self.events.append(
-                {"tool": name, "inputs": kwargs, "output": result, "worker_start_ns": begin, "worker_end_ns": end}
-            )
+            event = {"tool": name, "inputs": kwargs, "output": result, "worker_start_ns": begin, "worker_end_ns": end}
+            matching = [n for n in self.nodes if n["executable"] == name]
+            if len(matching) == 1:
+                n = matching[0]
+                requirements = set(n["control_preconditions"]) | set(ref_heads(n["input_bindings"]))
+                if all(p in self.ready_times for p in requirements):
+                    event.update(
+                        node=n["id"],
+                        eligible_ns=max([self.workflow_start] + [self.ready_times[p] for p in requirements]),
+                        eligibility_basis="wrapper_output_ready",
+                    )
+                self.ready_times[n["id"]] = end
+            self.events.append(event)
             return result
 
         return call
@@ -229,6 +241,8 @@ class Native:
         self.outputs = {}
         self.executor.initial_inputs = {"state": state}
         start = time.monotonic_ns()
+        self.workflow_start = start
+        self.ready_times = {"in": start}
         self.executor.execute()
         return {
             "ok": True,
