@@ -104,6 +104,11 @@ class Boundary:
 
     def validate(self, command, *, running=False):
         now, o = self.clock(), self.latest
+        if any(
+            type(value) is not int or value < 0
+            for value in (command.sample_id, command.scene_version, command.captured_ns, command.expires_ns)
+        ):
+            return "invalid_command_metadata"
         if self.ended:
             return "episode_ended"
         if self.unknown:
@@ -146,7 +151,7 @@ class Boundary:
             reason = "duplicate_command" if command.command_id in self.commands else self.validate(command)
             self.recorder.emit("admission", command_id=command.command_id, at_ns=self.clock(), reason=reason)
             if command.command_id not in self.commands:
-                self.commands[command.command_id] = command
+                self.commands[command.command_id] = deepcopy(command)
                 if reason:
                     self.event(ExecutionEvent(command.command_id, Status.REJECTED, self.clock(), reason))
             return reason
@@ -194,6 +199,10 @@ class SimulationDispatcher:
         with b.lock:
             if command.command_id not in b.commands or command.command_id in b.statuses:
                 return "not_admitted_or_duplicate"
+            if command != b.commands[command.command_id]:
+                b.event(ExecutionEvent(command.command_id, Status.REJECTED, b.clock(), "command_changed"))
+                return "command_changed"
+            command = deepcopy(b.commands[command.command_id])
             reason = b.validate(command)
             if reason:
                 b.event(ExecutionEvent(command.command_id, Status.REJECTED, b.clock(), reason))
@@ -219,11 +228,42 @@ class SimulationDispatcher:
                     command = b.commands[b.active]
                     reason = b.validate(command, running=True)
                     if reason:
-                        b.recorder.emit("stop_requested", command_id=b.active, reason=reason, at_ns=b.clock())
-                        b.event(self.controller.stop(b.active))
+                        self.stop_active(reason)
             except Exception:
                 if b.active:
                     b.event(ExecutionEvent(b.active, Status.UNKNOWN, b.clock(), "feedback_unavailable"))
+
+    def stop_active(self, reason, observation=None):
+        b = self.boundary
+        with b.lock:
+            if observation is not None:
+                latest = b.latest
+                if (
+                    latest is None
+                    or not latest.connected
+                    or observation.episode_id != latest.episode_id
+                    or observation.scene_version != latest.scene_version
+                    or observation.source_clock != LOCAL_CLOCK
+                    or not 0 <= b.clock() - observation.captured_ns <= b.age_ns
+                ):
+                    b.recorder.emit("proposal_rejected", reason="stale_stop_decision", sample_id=observation.sample_id)
+                    return
+            command_id = b.active
+            if command_id is None or command_id in b.unknown:
+                return
+            b.recorder.emit("stop_requested", command_id=command_id, reason=reason, at_ns=b.clock())
+            try:
+                reply = self.controller.stop(command_id)
+                if reply.command_id != command_id or reply.status not in {
+                    Status.INTERRUPTED,
+                    Status.COMPLETED,
+                    Status.FAILED,
+                }:
+                    raise ValueError("ambiguous stop acknowledgement")
+                b.recorder.emit("stop_acknowledgement", **record(reply))
+                b.event(reply)
+            except Exception:
+                b.event(ExecutionEvent(command_id, Status.UNKNOWN, b.clock(), "stop_unconfirmed"))
 
     def stop(self):
         b = self.boundary

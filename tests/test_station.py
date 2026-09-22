@@ -320,3 +320,56 @@ def test_config_backend_and_source_are_independent():
         assert Config(executor=executor, provider=provider, perception=source).provider == provider
     with pytest.raises(ValueError):
         Config(faults={"disconnect_s": "never"})
+
+
+def test_changed_admitted_command_never_dispatches(rig):
+    _, b, _, c, station, d = rig
+    b.admit(c)
+    changed = replace(c, action=PickupRequest("cube", (0.4, 0, 0.1)))
+    assert d.dispatch(changed) == "command_changed"
+    assert station.dispatch_calls == 0
+    assert b.statuses[c.command_id] == Status.REJECTED
+
+
+def test_admission_snapshots_mutable_payload(rig):
+    _, b, _, c, station, d = rig
+    position = [0.2, 0, 0.1]
+    c = replace(c, action=PickupRequest("cube", position))
+    b.admit(c)
+    position[0] = 0.4
+    assert d.dispatch(c) == "command_changed"
+    assert station.dispatch_calls == 0
+
+
+@pytest.mark.parametrize("expiry", [float("nan"), float("inf"), "forever", True])
+def test_invalid_expiry_fails_closed(rig, expiry):
+    _, b, _, c, station, d = rig
+    c = replace(c, expires_ns=expiry)
+    assert b.admit(c) == "invalid_command_metadata"
+    d.dispatch(c)
+    assert station.dispatch_calls == 0
+
+
+@pytest.mark.parametrize("wrong_id,status", [(True, Status.INTERRUPTED), (False, Status.ACCEPTED)])
+def test_ambiguous_stop_blocks_dispatch(rig, wrong_id, status):
+    clock, b, _, c, station, d = rig
+    b.admit(c)
+    d.dispatch(c)
+    station.stop = lambda cid: ExecutionEvent("wrong" if wrong_id else cid, status, clock[0])
+    d.stop_active("test")
+    assert b.statuses[c.command_id] == Status.UNKNOWN
+    assert b.admit(replace(c, command_id="next")) == "unreconciled_command"
+    assert station.dispatch_calls == 1
+
+
+def test_old_scene_stop_decision_cannot_stop_new_command(rig):
+    _, b, old, c, station, d = rig
+    current = replace(old, sample_id=2, scene_version=1)
+    b.observe(current)
+    c = replace(c, sample_id=2, scene_version=1)
+    b.admit(c)
+    d.dispatch(c)
+    d.stop_active("policy_abort", observation=old)
+    assert b.statuses[c.command_id] == Status.ACCEPTED
+    d.stop_active("policy_abort", observation=current)
+    assert b.statuses[c.command_id] == Status.INTERRUPTED

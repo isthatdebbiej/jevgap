@@ -174,18 +174,8 @@ class Runner:
                         decision=p["decision"],
                     )
                     if p["decision"] not in {"continue", "replan"}:
-                        if self.dispatcher and b.active and b.active not in b.unknown:
-                            with b.lock:
-                                try:
-                                    b.event(self.dispatcher.controller.stop(b.active))
-                                except Exception:
-                                    from .contracts import ExecutionEvent
-
-                                    b.event(
-                                        ExecutionEvent(
-                                            b.active, Status.UNKNOWN, time.monotonic_ns(), "stop_unconfirmed"
-                                        )
-                                    )
+                        if self.dispatcher:
+                            self.dispatcher.stop_active("policy_" + p["decision"], observation=o)
                         continue
                     if p["decision"] == "continue":
                         rec.emit("retained_plan", sample_id=o.sample_id, active_command=b.active)
