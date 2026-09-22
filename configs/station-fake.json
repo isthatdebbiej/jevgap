@@ -1,0 +1,9 @@
+{
+  "station": "fake",
+  "executor": "native",
+  "provider": "diagnostic",
+  "perception": "poses",
+  "duration_s": 1.0,
+  "worker_delay_s": 0.1,
+  "faults": {"scene_change_s": 0.15}
+}

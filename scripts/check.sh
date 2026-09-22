@@ -11,3 +11,5 @@ RTBENCH_CHECK_DIR=$(mktemp -d)
 trap 'rm -rf -- "$RTBENCH_CHECK_DIR"' EXIT
 "$RTBENCH_ENV/bin/python" scripts/executors.py --diagnostic "$RTBENCH_CHECK_DIR/conformance"
 "$RTBENCH_ENV/bin/python" scripts/privacy_check.py
+
+"$RTBENCH_ENV/bin/python" scripts/station.py --config configs/station-fake.json --output "$RTBENCH_CHECK_DIR/station-shadow"

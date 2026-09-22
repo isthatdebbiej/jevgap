@@ -8,7 +8,7 @@ license = "Apache-2.0"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["scripts"]
+pythonpath = ["scripts", "python"]
 
 [tool.ruff]
 line-length = 120

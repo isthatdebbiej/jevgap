@@ -182,3 +182,7 @@ This project is independent of the upstream projects and model providers.
 ## Continuous-loop development
 
 See [the continuous benchmark](docs/continuous.md) for repeated decisions, stale-response rejection, latency breakdowns and an experimental camera-derived state path. Offline checks use identical local workers and are separate from the Astra/Jev results above.
+
+## Station integration
+
+The [station runner](docs/station.md) provides observation-only shadow mode, fake-station fault tests, and a MuJoCo YAM adapter. Models and executors are selected independently of the station. Start with the offline examples; physical dispatch is not implemented. The [hardware worksheet](docs/station-worksheet.md) lists the information needed from an evaluation station.

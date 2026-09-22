@@ -1,0 +1,8 @@
+{
+  "station": "yam_sim",
+  "executor": "rust",
+  "provider": "diagnostic",
+  "perception": "rgbd",
+  "duration_s": 3.0,
+  "worker_delay_s": 0.2
+}

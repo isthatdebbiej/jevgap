@@ -1,0 +1,9 @@
+{
+  "station": "fake",
+  "executor": "rust",
+  "provider": "diagnostic",
+  "perception": "rgbd",
+  "duration_s": 1.0,
+  "worker_delay_s": 0.05,
+  "faults": {"ack_loss": true, "disconnect_s": 0.2, "reconnect_s": 0.5}
+}

@@ -1,0 +1,8 @@
+{
+  "station": "yam_sim",
+  "executor": "rust",
+  "provider": "jev",
+  "perception": "poses",
+  "duration_s": 12.0,
+  "max_calls": 12
+}

@@ -1,0 +1,18 @@
+{
+  "station": "fake",
+  "station_id": "sim-1",
+  "executor": "native",
+  "provider": "diagnostic",
+  "perception": "poses",
+  "duration_s": 1.0,
+  "worker_delay_s": 0.1,
+  "age_s": 5.0,
+  "command_ttl_s": 30.0,
+  "decision_interval_s": 0.05,
+  "max_calls": 50,
+  "faults": {
+    "scene_change_s": 0.15
+  },
+  "dispatch": true,
+  "live": false
+}

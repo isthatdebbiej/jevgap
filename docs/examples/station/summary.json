@@ -1,0 +1,42 @@
+{
+  "mode": "simulation_dispatch",
+  "provider": "diagnostic",
+  "executor": "native",
+  "calls": 4,
+  "workflow_failures": 0,
+  "call_limit_reached": false,
+  "statuses": {
+    "sim-1:episode-1:1": "interrupted",
+    "sim-1:episode-1:2": "completed"
+  },
+  "unresolved_commands": [],
+  "observation_replacements": 31,
+  "pending_observations": 0,
+  "measurements": {
+    "observation_ticks": 48,
+    "independently_completed": 1,
+    "dispatch_calls": 2
+  },
+  "rejections": {},
+  "execution_rejections": {},
+  "workflow_ms": {
+    "n": 4,
+    "p50": 129.0024505,
+    "p95": 152.496761
+  },
+  "perception_ms": {
+    "n": 48,
+    "p50": 0.0019944999999999997,
+    "p95": 0.003901
+  },
+  "observation_to_dispatch_ms": {
+    "n": 2,
+    "p50": 148.0355615,
+    "p95": 153.782968
+  },
+  "acknowledgement_ms": {
+    "n": 2,
+    "p50": 0.010754,
+    "p95": 0.012488
+  }
+}

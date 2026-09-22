@@ -17,21 +17,8 @@ from executors import Native, Rust, ROOT
 from settings import validate_credentials
 
 
-class LatestSlot:
-    """One in-flight request is managed by the caller; one pending observation."""
-
-    def __init__(self):
-        self.pending = None
-        self.replaced = 0
-
-    def put(self, state):
-        if self.pending is not None:
-            self.replaced += 1
-        self.pending = state
-
-    def take(self):
-        state, self.pending = self.pending, None
-        return state
+sys.path.insert(0, str(ROOT / "python"))
+from rtbench.station.boundary import LatestSlot
 
 
 def rejection(proposal, observations, version, now, age_ns, ended=False):

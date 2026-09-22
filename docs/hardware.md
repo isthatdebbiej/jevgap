@@ -63,9 +63,11 @@ Pinned source references:
 [CLI](https://github.com/i2rt-robotics/i2rt/blob/120c3c81400171174604e503943f8d1ebc891058/i2rt/robots/motor_chain_robot.py).
 Upstream source and the actual installed robot take precedence over generic examples.
 
-## 4. Implement the missing hardware boundary
+## 4. Implement the missing hardware adapter
 
-Before executing A/B proposals, implement and test these components:
+The [station integration layer](station.md) now supplies shared contracts, admission checks, shadow mode and simulated adapters. Fill out the [hardware worksheet](station-worksheet.md) before implementing the physical adapter.
+
+Before executing A/B proposals on hardware, integrate and verify these components:
 
 | Component | Required behavior |
 |---|---|
