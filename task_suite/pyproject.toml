@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rtbench-tasks"
+version = "0.1.0"
+description = "SE3 task contracts, local scoring and native GaP episode execution"
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[project.optional-dependencies]
+native = ["PyYAML==6.0.2", "numpy>=1.26", "pydantic>=2"]
+se3 = ["se3labs==0.0.1", "se3labs-interface==0.0.1"]
+
+[tool.setuptools.packages.find]
+include = ["rtbench_tasks*"]
+
+[project.scripts]
+rtbench-tasks = "rtbench_tasks.__main__:main"

@@ -17,3 +17,22 @@ jobs:
         run: bash scripts/setup.sh
       - name: Offline checks (no API credentials)
         run: bash scripts/check.sh
+
+  task-suite:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pinned native GaP runtime
+        shell: bash
+        run: |
+          git clone --no-checkout https://github.com/graph-robots/graph-as-policy.git vendor/graph-as-policy
+          git -C vendor/graph-as-policy checkout "$(cat gap-commit.txt)"
+      - name: Task and SDK dependencies
+        run: python -m pip install -e './task_suite[native,se3]'
+      - name: Offline task and SDK lifecycle checks
+        run: python scripts/check_tasks.py
+      - name: Privacy check
+        run: python scripts/privacy_check.py

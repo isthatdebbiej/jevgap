@@ -22,3 +22,7 @@ timing overlays manually.
 Contributions are licensed under Apache-2.0, the project license. Upstream GaP and
 I2RT code retain their own notices and licenses. Do not modify vendored checkouts as
 part of a benchmark without explicitly documenting and pinning the change.
+
+The native GaP task suite has a separate offline CI job. In its Python 3.12
+environment, install `./task_suite[native,se3]` and run `python scripts/check_tasks.py`.
+See [task-suite setup](task_suite/SETUP.md) for configuration and hardware prerequisites.

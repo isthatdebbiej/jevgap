@@ -14,6 +14,14 @@ Report suspected vulnerabilities through the hosting platform's private security
 advisory feature when enabled. Never post credentials or sensitive recordings in
 a public issue. Rotate any credential that has been exposed.
 
-This repository is experimental simulation software. It does not implement a
-hardware action bridge, certified safety controller or emergency-stop system.
+This repository is experimental robot policy software. The task suite adds an
+SE3 SDK bridge but does not implement a
+calibrated hardware driver, certified safety controller or emergency-stop system.
 See [the hardware guide](docs/hardware.md) before planning physical testing.
+
+The task-suite provider uses a private key-file path in local configuration and
+a separate, explicitly funded request-reservation ledger (default zero). It
+uses the official Responses HTTPS endpoint with redirects disabled. SE3 uses
+its saved SDK login and operator-provided Tailscale network. Local configuration
+and raw results are ignored by Git. See [task setup](task_suite/SETUP.md) for
+budget semantics and [driver requirements](task_suite/DRIVER.md) before live use.

@@ -23,3 +23,6 @@ dist/
 build/
 .DS_Store
 Thumbs.db
+
+/local-config/
+/.venv-tasks/

@@ -1,5 +1,17 @@
 # JevGaP
 
+## Current testing work: all 13 SE3 tasks
+
+The native GaP task suite now includes configuration templates, batch execution,
+an SE3 0.0.1 Python SDK bridge and a stateless model adapter. Its graph and SDK
+lifecycle checks run offline. Physical testing still requires station access and
+a calibrated perception/motion/evaluation driver.
+
+Start with the [setup guide](task_suite/SETUP.md), [driver contract](task_suite/DRIVER.md)
+and [testing plan](task_suite/TESTING_PLAN.md). The order is all 13 tasks with
+native GaP, then GaP/CaP and the broader ENPIRE/ASPIRE comparison. The existing
+Astra/Jev moving-cube experiment below remains a separate experiment.
+
 An experimental benchmark for graph-based robot policies: **native GaP + Astra**
 versus **GaP + Jev + a custom Rust executor**.
 
