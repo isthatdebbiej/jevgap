@@ -1,17 +1,15 @@
-# Historical A/B continuous-loop development results
+# Continuous-decision experiment results
 
-These records preserve the earlier Astra/Jev experiments. The current testing
-scope is GaP, CaP-X, ASPIRE and ENPIRE on all 13 tasks; see the
-[four-harness testing plan](../../../task_suite/TESTING_PLAN.md).
-
-These are development runs on WSL, separate from the original one-authorization
-pickup demo. Run configurations and individual episode summaries are retained
-alongside this page. All attempts are included.
+These WSL runs compare repeated decisions from native GaP + Astra and the
+Rust executor + Jev while a shared controller tracks a moving cube. Configurations
+and individual episode summaries are retained alongside this page, including
+failed attempts. Use the [four-harness testing plan](../../../task_suite/TESTING_PLAN.md)
+for the 13-task evaluation protocol.
 
 | Run | Episodes A / B | Pickup successes A / B | Purpose |
 |---|---:|---:|---|
 | Identical 400 ms local workers | 3 / 3 | 3 / 1 | Execution and stale-response checks |
-| Initial synchronous camera | 1 / 1 | 0 / 0 | Failed: view occlusion and rendering stalls |
+| Synchronous camera | 1 / 1 | 0 / 0 | Failed: view occlusion and rendering stalls |
 | Asynchronous camera | 1 / 1 | 0 / 0 | Camera integration; physics near 1x, perception still unreliable |
 | Live Astra / Jev | 1 / 1 | 1 / 1 | Continuous model-call integration |
 
@@ -36,12 +34,11 @@ frames. Median position error on detected frames was about 19 mm; missing frames
 are not included in that error statistic. Neither camera episode picked up the
 cube. These are failed perception trials, not hardware-ready results.
 
-The code changed across the camera iterations. Each configuration preserves the
-source hashes at collection time; later formatting, summary-field additions and
-a reset of the consecutive-contact counter during pauses postdate these runs.
-The earlier runs have not been silently relabeled as measurements of that final
-revision. The latest code passes offline tests; these small pilots guide further
-work rather than serving as a frozen publication benchmark.
+Each run configuration records the source hashes used to collect its
+measurements. Reproduce runs with those revisions: camera processing, summary
+fields and paused-contact counter handling vary by revision. The reported
+measurements apply to their recorded code and configuration. These small pilots
+provide integration evidence, not a statistically established performance ranking.
 
 See [reproduction and limitations](../../continuous.md),
 [the live report](continuous-live-v1/report.md) and

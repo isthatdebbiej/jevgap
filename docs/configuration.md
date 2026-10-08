@@ -2,7 +2,7 @@
 
 ## Four-harness task suite
 
-The current study selects GaP, CaP-X, ASPIRE or ENPIRE through an experiment
+Select GaP, CaP-X, ASPIRE or ENPIRE through an experiment
 configuration. Generate the private templates with the coordinator's `init`
 command, then choose the matching file for each batch:
 
@@ -24,11 +24,12 @@ station/model configuration. Its Responses budget ledger applies to native GaP;
 upstream workflows use their own model settings and spending controls. Match and
 record those controls as required by the [testing plan](../task_suite/TESTING_PLAN.md).
 
-## Historical Astra/Jev A/B defaults
+## Defaults for executor and inference experiments
 
-The settings below belong to the earlier moving-cube and executor experiments.
+These settings configure the [executor and inference experiment](executor-experiment.md):
+A uses native GaP with Astra; B uses the Rust executor with Jev.
 
-| Setting | Current default |
+| Setting | Default |
 |---|---|
 | Python | 3.12.3 |
 | Rust | 1.98.1 |
@@ -45,7 +46,7 @@ The settings below belong to the earlier moving-cube and executor experiments.
 Export variables explicitly. Never place real keys in a config or source file.
 The preflight reads only whether the provided files exist and are nonempty.
 
-The legacy providers' Python constants define their model, endpoint, timeout and
+The Astra/Jev providers' Python constants define their model, endpoint, timeout and
 spending policy. `ASTRA_BUDGET_LEDGER` and `JEV_BUDGET_LEDGER` can relocate ledgers.
 Keep each ledger shared by all pilot workers, and retain it between runs. Removing
 or changing it resets local accounting. Default caps are $100 and $5, respectively;

@@ -1,11 +1,13 @@
-# Historical A/B experiment: physical YAM bring-up
+# YAM controller and hardware bring-up
 
-This guide applies to the legacy moving-cube/Astra/Jev runners. For the current
-GaP, CaP-X, ASPIRE and ENPIRE study, use the [four-harness testing plan](../task_suite/TESTING_PLAN.md),
-[harness setup](../task_suite/HARNESSES.md) and [native GaP SE3 driver contract](../task_suite/DRIVER.md).
+This guide describes the hardware requirements for adapting the moving-cube
+controllers to a physical YAM arm. The [station interfaces](station.md) define
+observation and command boundaries. SE3-based evaluation uses the
+[harness setup](../task_suite/HARNESSES.md), [native GaP driver contract](../task_suite/DRIVER.md)
+and [four-harness testing plan](../task_suite/TESTING_PLAN.md).
 
-**Legacy runner status: no hardware action bridge is implemented or tested.**
-Those runners are simulation-only. This guide describes the staged path to a
+**The moving-cube runners are simulation-only.** Their hardware action bridge
+requires implementation and validation. This guide describes the staged path to a
 physical A/B experiment; it is not a command to run the simulation controller on
 hardware.
 
@@ -22,7 +24,8 @@ the public repo. Use native Linux for CAN access and measured runs.
 
 ## 2. Prove the software path without hardware
 
-Run the README setup and checks. Then run the deterministic moving-cube episode
+Follow the [experiment setup and checks](executor-experiment.md#installation).
+Then run the deterministic moving-cube episode
 and inspect its contact and completion logs. For the manufacturer's interactive
 viewer, `bash scripts/view-yam.sh` explicitly passes `--sim`; this matters because
 the pinned SDK's viewer defaults to a physical connection when the flag is omitted.
@@ -69,7 +72,7 @@ Upstream source and the actual installed robot take precedence over generic exam
 
 ## 4. Implement the missing hardware adapter
 
-The [station integration layer](station.md) now supplies shared contracts, admission checks, shadow mode and simulated adapters. Fill out the [hardware worksheet](station-worksheet.md) before implementing the physical adapter.
+The [station integration layer](station.md) supplies shared contracts, admission checks, shadow mode and simulated adapters. Fill out the [hardware worksheet](station-worksheet.md) before implementing the physical adapter.
 
 Before executing A/B proposals on hardware, integrate and verify these components:
 

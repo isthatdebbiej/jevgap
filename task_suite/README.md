@@ -6,7 +6,7 @@ The testing scope is **GaP, CaP-X, ASPIRE and ENPIRE across all 13 tasks** on th
 
 Start with [harness selection and setup](HARNESSES.md) and the [four-harness, 13-task testing plan](TESTING_PLAN.md). The [coordinator / native GaP setup](SETUP.md) and [native GaP station driver contract](DRIVER.md) describe that harness's SE3 integration.
 
-**Harness selection:** the batch configuration now supports `native-gap`, `cap`,
+**Harness selection:** the batch configuration supports `native-gap`, `cap`,
 `aspire` and `enpire`. The upstream adapters invoke CaP-X, ASPIRE's
 saved-policy runner and ENPIRE's TrialRunner in separate environments. See
 [native workflows, configuration and remaining task-port requirements](HARNESSES.md).
@@ -64,7 +64,7 @@ Implement the interfaces in `contracts.py` and call `runtime.run_episode`, or us
 python -m rtbench_tasks run --scenario scenarios/trial.json --model EXACT_MODEL_ID --policy lab_provider:make_policy --backend lab_sim:make_backend --output outputs/trial
 ```
 
-`make_policy(model_id=...)` returns a fresh policy with that exact model id and `decide(request)`. `make_backend()` returns a fresh backend. No fallback model is selected. This extension interface can accommodate additional providers. The built-in SE3 batch path currently implements OpenAI Responses only; existing enum-only decision providers need an adapter to the new action-and-memory response contract. Response-model verification, token accounting and request reservations are implemented in `responses.py`. The generic `run` command remains restricted to replay/simulation backends; use the configured batch command for SE3.
+`make_policy(model_id=...)` returns a fresh policy with that exact model id and `decide(request)`. `make_backend()` returns a fresh backend. No fallback model is selected. This extension interface can accommodate additional providers. The built-in SE3 batch path implements OpenAI Responses only; existing enum-only decision providers need an adapter to the action-and-memory response contract. Response-model verification, token accounting and request reservations are implemented in `responses.py`. The generic `run` command remains restricted to replay/simulation backends; use the configured batch command for SE3.
 
 The provider returns exactly `{"action": {"skill": ..., "object_id": ..., "target_id": ..., "orientation": ...}, "memory": "..."}`. Memory persists only within the episode, has a fixed size cap, and is updated by the model. All providers must use identical prompt visibility, memory limits, action budgets and matched scenarios. A provider must not retain a hidden conversation outside these explicit inputs when masking is enabled.
 
@@ -77,7 +77,7 @@ The backend must provide:
 3. Independent command-effect verification, distinct from a command acknowledgement or model assertion.
 4. Private `Evidence` measured from simulator state or calibrated human/vision evaluation, including observed event order for cover/press tasks and continuous no-lift evidence for alignment. Scoring never infers achieved placements from commanded actions.
 
-The current YAM station pickup runner remains separate. Its red-cube detector and single-pickup command cannot implement these tasks. Keep its existing observation, completion and actuator guards when adding an SE3 connector. A `.rrd` recording is useful evidence but is not a live command interface.
+The YAM station pickup runner exposes a single-pickup interface. Its red-cube detector and single-pickup command cannot implement these tasks. Keep its existing observation, completion and actuator guards when adding an SE3 connector. A `.rrd` recording is useful evidence but is not a live command interface.
 
 ## Evidence and evaluation
 
@@ -85,8 +85,8 @@ The current YAM station pickup runner remains separate. Its red-cube detector an
 
 This local rubric conservatively requires release at all intermediate tiers and stable objects where appropriate. These choices, and the unpowered charger adaptation, must not be presented as exact upstream evaluator equivalence. The official simulator evaluator remains authoritative for a future submission.
 
-Each trial writes `report.json`, public decision/command `events.json`, private `evaluation.json`, and native GaP traces. Reports record model, seed, layout, graph/scenario hashes, limits, source page, checkpoints, stop reason, score and optional RRD reference. A completed graph and a successful task are reported separately. All reports currently set `ranking_eligible=false` and `official_submission=false`.
+Each trial writes `report.json`, public decision/command `events.json`, private `evaluation.json`, and native GaP traces. Reports record model, seed, layout, graph/scenario hashes, limits, source page, checkpoints, stop reason, score and optional RRD reference. A completed graph and a successful task are reported separately. All reports set `ranking_eligible=false` and `official_submission=false`.
 
-The current study covers all four harnesses on all 13 tasks. Commission a common pilot task through each harness, then expand task coverage while tracking completed, failed and blocked harness/task combinations. A single run per combination is a feasibility check; repeated held-out trials are needed for a research result. Layout labels in replay fixtures are identifiers, not calibrated physical placement plans.
+The study covers all four harnesses on all 13 tasks. Commission a common pilot task through each harness, then expand task coverage while tracking completed, failed and blocked harness/task combinations. A single run per combination is a feasibility check; repeated held-out trials are needed for a research result. Layout labels in replay fixtures are identifiers, not calibrated physical placement plans.
 
 Future [RoboDojo submission](https://robodojo-benchmark.com/leaderboard/protocol) still requires the official evaluator, required robots/seeds and submission artifacts. No XPolicyLab transport, official simulator assets or leaderboard integration is claimed by this pilot package.

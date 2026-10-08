@@ -1,6 +1,6 @@
 # Select a harness for the four-harness study
 
-The current study tests **GaP, CaP-X, ASPIRE and ENPIRE across all 13 tasks**.
+The study tests **GaP, CaP-X, ASPIRE and ENPIRE across all 13 tasks**.
 Select one harness per batch and use the shared task/layout/seed matrix across
 the four configurations. All four are in scope; track their readiness separately.
 
@@ -24,7 +24,7 @@ insufficient for any method.
 | `enpire` | ENPIRE `enpire.env.forge.loop.TrialRunner` | Native environment and policy factories, model/checkpoint settings and evaluator export |
 
 CaP means the named **CaP-X implementation**, not an unspecified reproduction of
-the original Code as Policies paper. CaP-X may generate and repair code during
+the Code as Policies paper. CaP-X may generate and repair code during
 its trial. ASPIRE here evaluates an already developed policy; its skill search
 and repair happen in its upstream development workflow. ENPIRE here evaluates
 a supplied policy; selecting it does not automatically start neural training or
@@ -66,7 +66,7 @@ repository root (replace the Python path with `.venv-tasks/bin/python` on Linux)
 `init` generates replay/SE3 GaP configs and `cap.local.json`, `aspire.local.json`,
 `enpire.local.json`, plus 13 task-binding files for each upstream. It refuses to
 overwrite a directory. If you already configured GaP elsewhere, keep those files
-and point the new upstream experiments' `scenario_dir` at that calibrated
+and point the upstream experiments' `scenario_dir` at that calibrated
 scenario directory. The generated scenario files are unconfigured templates.
 
 Choose the harness by choosing a config file. For example, `enpire.local.json`

@@ -1,218 +1,109 @@
 # JevGaP
 
-## Current testing scope: four harnesses across all 13 SE3 tasks
+JevGaP is an open-source testbed for studying how AI coding agents build and
+improve robot-control policies with **GaP, CaP-X, ASPIRE and ENPIRE**. It provides
+a shared 13-task protocol, configurable harness adapters and independent task
+scoring for simulation and SE3 station evaluation.
 
-JevGaP's testing program covers **GaP, CaP-X, ASPIRE and ENPIRE** on the same
-13-task inventory. Each harness is selected through configuration. The study
-examines policy execution and AI-agent-led policy development, with matched
-tasks, observations, evaluation criteria and declared resource budgets.
+A harness provides the tools and execution workflow around a policy. The
+experiments examine task success, recovery, latency and improvement under
+declared model, compute and robot-trial budgets.
 
-| Harness | Selector | Implemented evaluation entry point |
+## Supported harnesses
+
+| Harness | Config selector | Evaluation entry point |
 |---|---|---|
-| GaP | `native-gap` | Native graph executor, replay diagnostics and SE3 Python Policy bridge |
-| CaP-X | `cap` | Upstream headless code-generation and execution workflow |
-| ASPIRE | `aspire` | Upstream saved-policy runner |
-| ENPIRE | `enpire` | Upstream TrialRunner with supplied policy and environment |
+| [GaP](https://github.com/graph-robots/graph-as-policy) | `native-gap` | Typed policy graphs executed by the native GaP runtime |
+| [CaP-X](https://github.com/capgym/cap-x) | `cap` | Python policy generation and execution through the upstream headless launcher |
+| [ASPIRE](https://github.com/NVlabs/ASPIRE) | `aspire` | Saved policies executed through the upstream script runner |
+| [ENPIRE](https://github.com/NVlabs/ENPIRE) | `enpire` | Supplied policies and environments evaluated through the upstream TrialRunner |
 
-All four belong to the current testing scope. Implementation readiness differs:
-task contracts, configurations, batch execution and adapter checks exist, while
-physical trials require calibrated perception/control, native task bindings and
-station access. Full policy-development workflows and matched budget enforcement
-also remain to be connected and validated. Offline checks establish integration
-behavior; they do not establish robot performance or a harness ranking.
+The [testing plan](task_suite/TESTING_PLAN.md) covers all four harnesses across
+all 13 tasks: **52 harness/task combinations**, expanded by layouts, seeds and
+repetitions. Each batch runs one selected harness. The study tracks completed,
+failed and blocked combinations and keeps native, local and operator outcomes
+separate.
 
-Start with [harness selection and configuration](task_suite/HARNESSES.md), the
-[four-harness testing plan](task_suite/TESTING_PLAN.md), and
-[coordinator / native GaP SE3 setup](task_suite/SETUP.md). The plan defines the
-shared task matrix, commissioning requirements and comparison protocol.
+## Get started
 
-## Historical Astra/Jev A/B experiments
-
-The moving-cube, continuous-loop and Rust-executor experiments below retain
-their original methods and results. Their A/B labels describe **native GaP +
-Astra** versus **GaP + Jev + a custom Rust executor** within those experiments.
-
-The same policy graph produces action proposals for a shared controller. This
-repository includes a Rust executor, Python workers, MuJoCo YAM demonstrations,
-timing logs and reproducible result summaries.
-
-| System | Graph | Executor | Decision model |
-|---|---|---|---|
-| **A** | GaP workflow | Native GaP | OpenAI GPT-6 Astra |
-| **B** | Same GaP workflow | Custom Rust executor | TypeSafe Jev |
-
-![Moving-cube comparison](docs/assets/moving-cube.png)
-
-**[Watch the side-by-side demo](docs/assets/moving-cube.mp4)** ·
-[Results and limitations](docs/results.md) · [Architecture](docs/architecture.md) ·
-[YAM hardware guide](docs/hardware.md)
-
-## Historical A/B architecture
-
-**GaP supplies the workflow format and the native executor used by A.** We build
-on [graph-robots/graph-as-policy](https://github.com/graph-robots/graph-as-policy),
-pinned by `gap-commit.txt`. Our selected graph has three steps: prepare the
-observation, request a decision, and produce an action proposal.
-
-These are custom benchmark workers registered through GaP's `ToolRegistry`.
-This experiment does not use GaP's existing robot skill catalog. The shared
-YAM tracking and grasp controller is also custom.
-
-```mermaid
-flowchart LR
-    S[Observation] --> G[Same GaP workflow]
-    G --> A[A: Native GaP executor]
-    G --> I[B: Supported-subset importer]
-    I --> R[Custom Rust executor]
-    A --> M[Astra decision worker]
-    R --> J[Jev decision worker]
-    M --> P[Action proposal]
-    J --> P
-    P --> Q[Common admission gate]
-    Q --> C[Same tracking controller]
-    C --> Y[YAM simulation]
-    Y --> S
-```
-
-In **A**, upstream GaP executes the graph and calls Astra through our Python
-decision worker. Its scheduler and normal tracing are preserved.
-
-In **B**, our importer reads the same graph into a limited Rust representation.
-The Rust executor starts a node when its required control and data inputs are
-ready. It calls persistent Python workers over Unix-domain sockets and collects
-their results. The decision worker calls **Jev**, which chooses one of
-`continue`, `reperceive`, `replan` or `abort`. B uses GaP's graph specification;
-it does not run the native GaP executor inside Rust.
-
-Both paths return an `ActionProposal` carrying the observation identity and
-timestamp. The shared gate checks it before the controller acts. Neither model
-receives an actuator handle or writes motor commands.
-
-For the moving-cube demo, the model authorizes pickup once. The same controller
-then tracks the cube using live simulator state, closes the fingers, lifts and
-holds it. The model is not the low-level motion controller. The joint-target
-pilot instead requests repeated decisions as observations arrive.
-
-The purpose is to measure the complete decision-to-action path. Since B changes
-both execution and the decision model, an A/B timing difference cannot tell us
-how much came from Jev versus the Rust executor.
-
-## Historical moving-cube result
-
-One matched moving-cube episode per system:
-
-| System | Confirmed pickup | Retained at episode end |
-|---|---:|---|
-| A — Native GaP + Astra | 8.79 s | Yes |
-| B — GaP + Jev + custom Rust executor | 5.42 s | Yes |
-
-Pickup means the cube center is more than 5 cm above the table with opposing
-finger contact sustained for 300 ms. Both episodes ran for 18 seconds with the
-same initial state, model and controller. The video uses synchronized 1× wall-time
-playback and shows the confirmed pickup time.
-
-**This is an integration demo, not a statistical speedup claim.** The task uses
-simulator ground truth and experimental fingertip contact pads. A deterministic
-rule could authorize the same pickup. The comparison changes execution **and**
-inference, so it does not isolate the Rust executor's contribution. No physical
-hardware result or semantic-quality equivalence is claimed.
-
-## Run the historical A/B experiments
-
-Use Ubuntu 24.04 or WSL2 for development. Use native Linux for published timing
-studies. Keep the checkout, environment and outputs on Linux storage when possible.
-Install Git, [uv](https://docs.astral.sh/uv/getting-started/installation/),
-[Rust](https://rustup.rs/) and system OpenGL libraries first:
+Install the Python 3.12 coordinator and pinned dependencies using
+[SETUP.md](task_suite/SETUP.md). Then, from the repository root with that
+environment activated:
 
 ```bash
-sudo apt-get update
-sudo apt-get install -y build-essential pkg-config libegl1 libgl1 libglfw3
-# From this repository's root:
-bash scripts/setup.sh
-bash scripts/check.sh
+python scripts/task_suite.py init --directory local-config/harnesses --gap-root vendor/graph-as-policy
+python scripts/task_suite.py harnesses
+python scripts/task_suite.py plan --config local-config/harnesses/enpire.local.json
 ```
 
-Setup fetches pinned GaP and I2RT checkouts into ignored `vendor/`, creates the
-Python 3.12.3 environment under `$HOME/.local/share/rtbench/yam-venv`, and builds
-Rust 1.98.1 under `$HOME/.cache/rtbench/target`. Dependency versions are committed.
-`RTBENCH_ENV` and `CARGO_TARGET_DIR` override these locations. When overriding the
-build directory, set `RTBENCH_BINARY` to its `release/rtbench-runtime` binary.
+`init` creates private configuration templates. `plan` lists the selected trials
+and missing setup without launching a model or robot. Select the corresponding
+experiment file for each harness:
 
-### Run locally without model APIs
+| Harness | Configuration under `local-config/harnesses/` |
+|---|---|
+| GaP | `replay.json` for offline diagnostics; `se3.local.json` for SE3 |
+| CaP-X | `cap.local.json` |
+| ASPIRE | `aspire.local.json` |
+| ENPIRE | `enpire.local.json` |
+
+For a known-answer software check without model requests or station access:
 
 ```bash
-PY="$HOME/.local/share/rtbench/yam-venv/bin/python"
-"$PY" scripts/moving_cube.py --diagnostic --duration 18 \
-  --output "$HOME/.local/share/rtbench/results/cube-check"
-"$PY" scripts/cube_video.py "$HOME/.local/share/rtbench/results/cube-check" --diagnostic
+python scripts/task_suite.py batch --config local-config/harnesses/replay.json --output results/tasks/replay-001
 ```
 
-This verifies contact-based pickup with a deterministic decision. It is **not**
-an A/B model comparison. The diagnostic runs unpaced; its timeline is simulation
-time. Choose a new output directory for every run.
+Use an unused output directory for every run. Replay tests software contracts;
+its scores do not measure model quality or robot performance. Follow
+[HARNESSES.md](task_suite/HARNESSES.md) to install an upstream environment, bind
+its native task implementation and run configuration checks. Agents must ask
+before spending OpenAI API credits; a configured key or `--live` flag does not
+replace user approval.
 
-### Run one live A/B pair
+## Implementation and deployment requirements
 
-Create credential files outside the checkout, then provide their paths:
+The repository includes task contracts, scenario templates, local scoring,
+batch execution, GaP replay fixtures, an SE3 Python Policy bridge and adapters
+for all four harnesses. Offline tests exercise configuration, execution,
+failure handling and score boundaries.
 
-```bash
-export ASTRA_KEY_FILE="/path/to/private/astra.key"
-export JEV_KEY_FILE="/path/to/private/jev.key"
-PY="$HOME/.local/share/rtbench/yam-venv/bin/python"
-"$PY" scripts/moving_cube.py --live --duration 18 \
-  --output "$HOME/.local/share/rtbench/results/cube-pair"
-"$PY" scripts/cube_video.py "$HOME/.local/share/rtbench/results/cube-pair"
-```
+Physical trials need station access, calibrated perception and control,
+independent measurements and task/environment implementations for each harness.
+Complete policy-development workflows and matched resource enforcement also
+require integration and validation. The evaluation adapters alone do not run
+every upstream search, repair or training workflow. See the
+[task suite](task_suite/README.md), [driver contract](task_suite/DRIVER.md) and
+[testing plan](task_suite/TESTING_PLAN.md) for requirements and study design.
 
-Live mode makes billable requests and sends synthetic task state to OpenAI and
-TypeSafe. It does not transmit images or hardware data. Model IDs are
-`gpt-6-astra` (low reasoning effort) and pinned `jev-1.13.0`. Local, shared spending
-guards default to **$100 for Astra / $5 for Jev**; see [configuration](docs/configuration.md).
+## Documentation and experiments
 
-### Run the joint-target pilot
-
-```bash
-"$PY" scripts/yam_sim.py --live --pairs 5 --duration 12 \
-  --output "$HOME/.local/share/rtbench/results/joint-pairs"
-"$PY" scripts/yam_report.py "$HOME/.local/share/rtbench/results/joint-pairs"
-```
-
-Five pairs are ten episodes: one static pair, two early-change pairs and two
-late-change pairs. `--diagnostic` substitutes local decisions for plumbing tests.
+| Guide | What it covers |
+|---|---|
+| [Harness setup](task_suite/HARNESSES.md) | Select GaP, CaP-X, ASPIRE or ENPIRE; configure native workflows and evaluator exports |
+| [Testing plan](task_suite/TESTING_PLAN.md) | Shared tasks, commissioning, controlled comparisons and coverage criteria |
+| [Architecture](docs/architecture.md) | Harness dispatch, scoring boundaries and graph executor semantics |
+| [Configuration](docs/configuration.md) | Experiment files, model settings and budget scopes |
+| [Executor and inference experiment](docs/executor-experiment.md) | Compare native GaP + Astra with a Rust executor + Jev on matched simulated tasks |
+| [Continuous decisions](docs/continuous.md) | Test repeated decisions, stale-response rejection and perception latency |
+| [Station integration](docs/station.md) | Observation, admission and completion contracts using fake and MuJoCo stations |
+| [Measured results](docs/results.md) | Simulation measurements, sample counts, provenance and limitations |
 
 ## Project layout
 
 ```text
+task_suite/           Four-harness task contracts, adapters, configuration and scoring
+scripts/              Experiment runners, providers, diagnostics and analysis
 crates/runtime/       Rust required-input scheduler and Unix-socket transport
-scripts/              Executors, providers, simulation runners and analysis
-task_suite/           Four-harness task contracts, configuration, adapters and scoring
-workflows/yam_pickup/  Proposal-only GaP workflow
+workflows/yam_pickup/  Proposal-only GaP workflow for executor experiments
 tests/                Gate, importer, contact and budget checks
-docs/                 Methods, results, hardware guide and selected evidence
+docs/                 Methods, setup guides and selected evidence
 third_party/          Upstream license notices
 ```
 
-The supported importer is deliberately limited: unconditional, single-scope
-acyclic tool graphs with explicit input references. The selected linear graph
-has native/Rust conformance evidence. Loops, streams, conditional branches,
-subgraphs, recovery and arbitrary robot tools are rejected.
-
-**The historical A/B runners do not implement physical dispatch.** The simulation torque controller and
-contact model must not be copied directly to a physical arm. The
-[hardware guide](docs/hardware.md) describes SDK bring-up, calibration, shadow
-testing and the controller bridge that must be implemented before A/B trials.
-
 ## Contributing and license
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
-Project code is licensed under [Apache-2.0](LICENSE). GaP, I2RT and other
-dependencies retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
-This project is independent of the upstream projects and model providers.
-
-## Historical continuous-loop development
-
-See [the continuous benchmark](docs/continuous.md) for repeated decisions, stale-response rejection, latency breakdowns and an experimental camera-derived state path. Offline checks use identical local workers and are separate from the Astra/Jev results above.
-
-## Legacy station integration
-
-The [station runner](docs/station.md) provides observation-only shadow mode, fake-station fault tests, and a MuJoCo YAM adapter. Models and executors are selected independently of the station. Start with the offline examples; physical dispatch is not implemented. The [hardware worksheet](docs/station-worksheet.md) lists the information needed from an evaluation station.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development and offline validation,
+and [SECURITY.md](SECURITY.md) for credentials and deployment boundaries.
+Project code is licensed under [Apache-2.0](LICENSE). Dependencies retain their
+own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md). This project is
+independent of the upstream projects and model providers.

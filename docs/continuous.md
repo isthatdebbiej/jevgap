@@ -1,10 +1,12 @@
-# Historical A/B continuous observation and decision benchmark
+# Continuous observation and decision experiment
 
-This page retains the earlier Astra/Jev continuous-loop experiment. The current
-testing program covers GaP, CaP-X, ASPIRE and ENPIRE across all 13 tasks; see the
-[four-harness testing plan](../task_suite/TESTING_PLAN.md).
+This experiment measures repeated model decisions while physics and
+observations advance independently. A uses native GaP with Astra; B uses the
+Rust executor with Jev. It tests latency, observation freshness and action
+admission. See the [four-harness testing plan](../task_suite/TESTING_PLAN.md) for
+the shared task-evaluation protocol.
 
-The original moving-cube demo requests one pickup authorization. The continuous
+The single-authorization moving-cube experiment requests one pickup authorization. The continuous
 runner requests decisions throughout the episode while physics and observations
 continue independently of inference. It reuses the same GaP graph in A and B.
 
@@ -18,7 +20,8 @@ stop an already moving physical arm. This controller is simulation-only.
 
 ## Run offline first
 
-After `bash scripts/setup.sh`, use the Python environment created by setup:
+Follow the [experiment installation guide](executor-experiment.md#installation)
+and run `bash scripts/setup.sh`. Use the Python environment created by setup:
 
 ```bash
 PY="$HOME/.local/share/rtbench/yam-venv/bin/python"

@@ -1,16 +1,18 @@
-# Legacy station runner integration
+# Station interfaces and fault testing
 
-This page describes `scripts/station.py` and its A/B simulation/shadow workflow.
-The current GaP, CaP-X, ASPIRE and ENPIRE task suite uses the separate
-[harness configuration](../task_suite/HARNESSES.md) and [testing plan](../task_suite/TESTING_PLAN.md).
+`scripts/station.py` tests observation, command admission and completion
+interfaces using simulated stations and observation-only shadow runs. For
+GaP, CaP-X, ASPIRE and ENPIRE task evaluation, configure each native environment
+using the [harness guide](../task_suite/HARNESSES.md) and [testing plan](../task_suite/TESTING_PLAN.md).
 
 The station package separates observation access, perception, model execution,
-action admission and controller feedback. The first implementations are a fake
+action admission and controller feedback. The supplied implementations are a fake
 station and MuJoCo YAM. Physical dispatch is not implemented.
 
 ## Offline commands
 
-After the existing setup script, run from the repository root:
+Install the environment using the [experiment setup](executor-experiment.md#installation),
+then run from the repository root:
 
 ```bash
 PY="$HOME/.local/share/rtbench/yam-venv/bin/python"
@@ -51,7 +53,7 @@ Calibration and source timestamps remain attached to each observation.
 
 `python/rtbench/station/contracts.py` defines observations, station capabilities,
 commands, feedback and source/controller protocols. Pickup requests, Cartesian
-targets and joint trajectories are separate payload types. Both current stations
+targets and joint trajectories are separate payload types. Both supplied stations
 advertise pickup requests only. Supporting a payload in the type system does not
 mean a station can execute it; unsupported commands are rejected, never translated.
 The fake command completes after a scripted delay, not a physical grasp. The YAM
@@ -84,7 +86,7 @@ offers `reconcile(command_id)` for deterministic tests. A hardware adapter will
 need authoritative controller state to implement that operation.
 
 Worker functions receive structured state, not controller handles. This is an
-interface boundary, not an OS sandbox for hostile plugins. The current SDK
+interface boundary, not an OS sandbox for hostile plugins. The station SDK
 compatibility imports remain in the checkout's scripts directory; invoke the
 provided entrypoint from a checkout rather than treating this as a published wheel.
 
@@ -108,9 +110,10 @@ scene changes, disconnect/reconnect, an unrelated source clock and lost command
 acknowledgements. `advance(now)` allows deterministic tests without wall-clock
 sleep. Fault settings are not exposed as physical station behavior.
 
-The old moving-cube and continuous runners remain available for reproducing their
-published experiments. New station integrations should use this runner; no old
-results are reclassified as station-layer measurements.
+`scripts/moving_cube.py` measures one pickup authorization;
+`scripts/continuous.py` measures repeated decisions. This station runner
+measures the observation/admission/completion interface. Label results with the
+runner and configuration used so measurements retain their experimental scope.
 
 ## Hardware handoff
 

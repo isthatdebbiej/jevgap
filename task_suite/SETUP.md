@@ -14,8 +14,9 @@ contract](DRIVER.md) and [four-harness testing plan](TESTING_PLAN.md).
 ## Install and create configuration
 
 From the JevGaP repository root, use Python 3.12 and the GaP checkout pinned by
-`gap-commit.txt`. The existing setup script obtains that checkout. A separate
-environment avoids changing the historical moving-cube demo's dependencies:
+`gap-commit.txt`. The repository's setup script obtains that checkout. A dedicated
+environment isolates coordinator dependencies from simulation and upstream
+harness environments:
 
 If `python` opens the Microsoft Store on Windows, install/use an actual Python
 3.12 interpreter first, and substitute its full executable path in the first
@@ -111,13 +112,13 @@ The implemented live provider is `openai-responses`, with strict structured
 returns a dated snapshot name for an alias, explicitly list acceptable IDs in
 `accepted_response_models`. An unexpected model, refusal, incomplete output,
 malformed action or missing usage fails the call. There is no fallback model.
-Legacy Jev enum decisions are a different contract and are not accepted here.
+The Jev provider's enum-only decisions are a different contract and are not accepted here.
 
 `budget_usd` and `reservation_usd` start at zero, deliberately blocking requests.
 Every attempted request atomically consumes its full reservation in a dedicated
 SQLite ledger shared across trials and invocations. Failed/uncertain calls keep
-their reservation; there are no automatic retries. Existing ledgers from the
-historical provider are rejected, so their spending cannot silently disappear.
+their reservation; there are no automatic retries. Ledgers from the Astra/Jev executor-experiment providers use a different
+accounting schema and are rejected; configure a dedicated task-suite ledger.
 
 These are **reservation allowances, not a measured invoice or a guaranteed
 provider spending cap**. Choose a conservative per-call upper bound using current
@@ -150,7 +151,7 @@ Session completion, graph completion, local score and operator success are
 separate. Overall success requires a completed single-episode session, a scored
 operator success, measured local success and an explicit policy `finish`.
 Unscored, cancelled or failed sessions never pass. Operator binary judgement
-does not replace the local task's partial-credit rubric. All current reports
+does not replace the local task's partial-credit rubric. All reports
 remain `ranking_eligible=false` and `official_submission=false`.
 
 The implementation follows the [SE3 Python API tutorial](https://docs.se3labs.ai/docs/v0.0.1/tutorials/evaluate-your-policy/python-api/)

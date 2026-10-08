@@ -1,9 +1,10 @@
-# Historical Astra/Jev A/B results
+# Executor and inference results
 
-These measurements belong to the earlier moving-cube and executor experiments.
-Results for the current GaP, CaP-X, ASPIRE and ENPIRE study must follow the
-[four-harness testing plan](../task_suite/TESTING_PLAN.md) and report coverage
-and outcomes for its own task matrix.
+These measurements compare native GaP + Astra with the Rust executor + Jev
+on simulated moving-cube and joint-target tasks. The [experiment guide](executor-experiment.md)
+describes the runners and controller. Report results for the 13-task harness
+study using its [testing plan](../task_suite/TESTING_PLAN.md), coverage matrix
+and matched evaluation protocol.
 
 ## Moving cube: one matched pair
 
@@ -51,12 +52,12 @@ and episode-ended proposals remain in the logs.
 
 Collected under WSL2 using the pinned GaP/I2RT revisions and Python/MuJoCo
 dependencies in this repository. Source was on mounted Windows storage, while
-environments, Rust outputs, sockets and original logs were on Linux storage.
+environments, Rust outputs, sockets and unmodified logs were on Linux storage.
 Use native Linux and Linux-hosted source for a publication-quality timing study.
 
-Public evidence uses A/B labels consistently. Original local logs are preserved;
-the public copies normalize the earlier second-condition label and tool namespace.
-No measured numbers or task outcomes were changed. Local paths, host identifiers,
+Public evidence uses A/B labels consistently. Unmodified local logs are retained;
+public copies normalize system labels and tool namespaces. Measured numbers
+and task outcomes are preserved. Local paths, host identifiers,
 billing ledgers and private source manifests are omitted. Credential files were
 never part of result records. Finger-contact and controller development runs were
 separate from the delivered live episodes.

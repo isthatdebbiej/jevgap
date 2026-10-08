@@ -1,7 +1,7 @@
 # JevGaP four-harness testing plan
 
 Scope: **GaP, CaP-X, ASPIRE and ENPIRE across all 13 tasks**. All four harnesses
-are included in the current testing program. Choose the harness in configuration
+are evaluated under a shared protocol. Choose the harness in configuration
 and assess every harness against the same task definitions, prescribed layouts
 and independent evaluator.
 
@@ -23,7 +23,7 @@ readiness or a completed reproduction of each upstream research system.
 - [x] SE3 0.0.1 Python lifecycle bridge, validated joint-chunk structure, measured-completion interface and cancellation handling.
 - [x] Stateless Responses model adapter, explicit model checking, token records and persistent request reservations.
 - [x] Offline tests through all 13 native graphs and all 13 SDK callback lifecycles, plus failure paths.
-- [x] Separate CI job for the task suite; historical Rust/moving-cube checks remain separate.
+- [x] Separate CI job for the task suite; Rust-executor and moving-cube checks run in their own job.
 - [x] Configurable upstream CaP-X, ASPIRE saved-policy and ENPIRE TrialRunner adapters with pinned profiles, all 13 task-binding templates, preflight, process limits and separate native/local/operator outcomes. See [harness guide](HARNESSES.md).
 
 These graphs are supplied scaffolding that route model-selected semantic actions.
@@ -93,7 +93,7 @@ library used in each study arm. Control resources before drawing comparisons.
 |---|---|---|
 | [GaP](https://github.com/graph-robots/graph-as-policy) | Typed computation graphs, modular skills and execution checkpoints | Evaluate native graph execution; connect graph generation/repair for the development arm |
 | [CaP-X](https://github.com/capgym/cap-x) | Python policy programs; CaP-Agent0 includes multi-turn feedback and synthesized skills | Evaluate the configured native generation/execution workflow; declare feedback and regeneration budgets |
-| [ASPIRE](https://github.com/NVlabs/ASPIRE) | Iterative program repair and reusable skill discovery; includes search/transfer experiments | Evaluate saved policies through the current adapter; connect repair/search and control the initial library for the development arm |
+| [ASPIRE](https://github.com/NVlabs/ASPIRE) | Iterative program repair and reusable skill discovery; includes search/transfer experiments | Evaluate saved policies through the saved-policy adapter; connect repair/search and control the initial library for the development arm |
 | [ENPIRE](https://github.com/NVlabs/ENPIRE) | Physical reset, rollout, verification and iterative policy improvement; supports heuristic code and neural training | Evaluate supplied policies through TrialRunner; connect development workflows and measure improvement per trial/time/compute budget |
 
 Use two complementary study arms across the four harnesses:
@@ -101,7 +101,7 @@ Use two complementary study arms across the four harnesses:
 1. **Policy evaluation:** measure task success, recovery, auditability and
    latency for each harness under matched observations, control and feedback.
    Freeze policy artifacts and libraries for an execution-only comparison.
-   CaP-X's current launcher can generate/repair code during a trial, so record
+   CaP-X's launcher can generate/repair code during a trial, so record
    those calls as development and isolate frozen execution before claiming a
    matched execution-only result. Ablate checkpoints, explicit memory and skill
    reuse where supported, and label unsupported ablations.
@@ -130,7 +130,7 @@ and budget. Use confidence intervals and paired task comparisons; repeated
 episodes from one policy are not independent development runs.
 
 Code/graph/skill refinement is different from neural-weight fine-tuning.
-Evaluate frozen-model code improvement first. A later weight-training study
+Evaluate frozen-model code improvement first. A neural-weight training study
 needs dataset/version tracking, train/validation/test separation, training
 budgets and frozen checkpoint evaluation; it is not implemented by this runner.
 
@@ -144,7 +144,7 @@ budgets and frozen checkpoint evaluation; it is not implemented by this runner.
 - [ ] Optional providers for Jev/other models using the action-and-memory contract; verify exact model identity and usage accounting.
 - [ ] Optional XPolicyLab path if deploying a separate model server becomes useful; do not implement it merely to duplicate the working Python API route.
 
-The legacy Jev/Rust executor supports a smaller graph subset and cannot stand
+The Jev/Rust executor used by the executor experiment supports a smaller graph subset and cannot stand
 in for native GaP on these looping task graphs. Keep executor and model
 comparisons separate from the four-harness research question.
 
@@ -157,7 +157,7 @@ checked evidence for each of the 52 harness/task combinations. A research
 comparison additionally requires a complete coverage/status matrix, frozen
 baselines, equal budgets, held-out trials and statistical analysis. Report any
 blocked combinations explicitly when publishing an incomplete study.
-Current artifacts intentionally make no leaderboard or four-harness ranking claim.
+Artifacts make no leaderboard or four-harness ranking claim.
 
 Sources: [task inventory](https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380),
 [SE3 Python API](https://docs.se3labs.ai/docs/v0.0.1/tutorials/evaluate-your-policy/python-api/),

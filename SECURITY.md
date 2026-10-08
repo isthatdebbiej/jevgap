@@ -1,16 +1,16 @@
 # Security and credential handling
 
-The current study covers GaP, CaP-X, ASPIRE and ENPIRE. Keep credentials outside
+The study covers GaP, CaP-X, ASPIRE and ENPIRE. Keep credentials outside
 the checkout and use each harness's documented private configuration. No keys
 are needed for offline adapter tests. Upstream processes use their own credential
 and budget mechanisms; the coordinator's native GaP controls do not govern their
 requests. See [harness setup](task_suite/HARNESSES.md).
 
-The historical Astra/Jev providers use `ASTRA_KEY_FILE` and `JEV_KEY_FILE`. Those
+The Astra/Jev providers used by the executor experiments use `ASTRA_KEY_FILE` and `JEV_KEY_FILE`. Those
 providers only send credentials to their configured official HTTPS endpoints,
 disable redirects and suppress remote error bodies.
 
-Those legacy adapters use persistent SQLite budget ledgers shared by worker processes.
+Those providers use persistent SQLite budget ledgers shared by worker processes.
 Defaults are $100 for Astra and $5 for Jev; failed or uncertain requests retain
 their reservations. These are local experiment guards, not account-wide billing
 limits. Do not delete or split ledgers to reset a pilot's spending.
@@ -19,7 +19,7 @@ Report suspected vulnerabilities through the hosting platform's private security
 advisory feature when enabled. Never post credentials or sensitive recordings in
 a public issue. Rotate any credential that has been exposed.
 
-This repository is experimental robot policy software. The task suite adds an
+This repository is experimental robot policy software. The task suite includes an
 SE3 SDK bridge but does not implement a
 calibrated hardware driver, certified safety controller or emergency-stop system.
 See the [task-suite driver requirements](task_suite/DRIVER.md) and
