@@ -6,6 +6,12 @@ All 13 tasks on the hardware team's [Task Design page](https://knowing-wandflowe
 
 Start with [configuration and setup](SETUP.md), the [station driver contract](DRIVER.md), and the [plan for all 13 tasks followed by the four-harness comparison](TESTING_PLAN.md).
 
+**Harness selection:** the batch configuration now supports `native-gap`, `cap`,
+`aspire` and `enpire`. The additional adapters invoke upstream CaP-X, ASPIRE's
+saved-policy runner and ENPIRE's TrialRunner in separate environments. See
+[native workflows, configuration and remaining task-port requirements](HARNESSES.md).
+These adapters do not implement a matched four-way policy-development study.
+
 ## Run
 
 Use Python 3.12 and the project's pinned `vendor/graph-as-policy` checkout. From this directory:

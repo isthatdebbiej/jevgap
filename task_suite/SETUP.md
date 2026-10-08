@@ -6,11 +6,18 @@ station driver implementing perception, motion and independent verification.**
 Station IDs alone do not provide those capabilities. See [driver contract](DRIVER.md)
 and [remaining work and comparison design](TESTING_PLAN.md).
 
+For configurable CaP-X, ASPIRE and ENPIRE upstream adapters, see
+[harness setup](HARNESSES.md). `init` now creates templates for all four harnesses.
+
 ## Install and create configuration
 
 From the JevGaP repository root, use Python 3.12 and the GaP checkout pinned by
 `gap-commit.txt`. The existing setup script obtains that checkout. A separate
 environment avoids changing the historical moving-cube demo's dependencies:
+
+If `python` opens the Microsoft Store on Windows, install/use an actual Python
+3.12 interpreter first, and substitute its full executable path in the first
+command. Creating configuration does not install the required environments.
 
 ```powershell
 python -m venv .venv-tasks

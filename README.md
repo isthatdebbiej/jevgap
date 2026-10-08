@@ -12,6 +12,11 @@ and [testing plan](task_suite/TESTING_PLAN.md). The order is all 13 tasks with
 native GaP, then GaP/CaP and the broader ENPIRE/ASPIRE comparison. The existing
 Astra/Jev moving-cube experiment below remains a separate experiment.
 
+The batch runner also accepts `harness: "cap"`, `"aspire"` and `"enpire"` using
+their upstream workflows and separate Python environments. See the
+[harness selection guide](task_suite/HARNESSES.md) for configuration, native
+entry points, supported evaluation scope and remaining task-port requirements.
+
 An experimental benchmark for graph-based robot policies: **native GaP + Astra**
 versus **GaP + Jev + a custom Rust executor**.
 

@@ -23,7 +23,7 @@ def initialize(directory, gap_root):
     from .replay import fixture
     root = Path(directory)
     root.mkdir(parents=True, exist_ok=False)
-    config = {"schema_version": 1, "name": "native-gap-13-tasks", "mode": "replay", "tasks": "all",
+    config = {"schema_version": 1, "name": "native-gap-13-tasks", "mode": "replay", "harness": "native-gap", "tasks": "all",
               "seeds": [0], "repetitions": 1, "gap_root": str(Path(gap_root).resolve()),
               "station_config": "station.local.json", "scenario_dir": "scenarios",
               "model": {"provider": "replay"},
@@ -47,37 +47,43 @@ def initialize(directory, gap_root):
         data = asdict(scenario)
         data["layout"] = "UNCONFIGURED-physical-layout"
         write_json(root / "scenarios" / f"{task}--0--0.json", data)
+    from .upstream import write_templates
+    write_templates(root, config)
     return root
 
 
 def run(experiment, output, *, live=False):
-    from .graphs import build_all
-    from .replay import fixture
-    from .runtime import run_episode
     e = experiment
     readiness = preflight(e)
     if not readiness["configuration_ready"]:
         raise ValueError("configuration blocked: " + "; ".join(readiness["blockers"]))
-    if e.data["mode"] == "se3" and not live:
-        raise ValueError("SE3/model requests require --live")
+    if e.data["mode"] != "replay" and not live:
+        raise ValueError("SE3/model requests and upstream processes require --live")
     out = Path(output)
     out.mkdir(parents=True, exist_ok=False)
     # Store hashes rather than credential paths or private station configuration.
     write_json(out / "manifest.json", {"schema_version": 1, "name": e.data["name"],
-               "mode": e.data["mode"], "harness": "native-gap", "config_sha256": hashlib.sha256(e.path.read_bytes()).hexdigest(),
+               "mode": e.data["mode"], "harness": e.harness, "config_sha256": hashlib.sha256(e.path.read_bytes()).hexdigest(),
                "tasks": e.tasks, "trials": e.trials, "limits": e.limits,
-               "model_id": e.data.get("model", {}).get("model_id", "diagnostic-recorded-policy"),
-               "gap_commit": GAP_COMMIT,
+               "model_id": e.data.get("model", {}).get("model_id", "upstream-configured" if e.harness != "native-gap" else "diagnostic-recorded-policy"),
+               "gap_commit": GAP_COMMIT if e.harness == "native-gap" else None,
                "official_submission": False, "ranking_eligible": False})
-    graphs = build_all(out / "graphs")
+    if e.harness == "native-gap":
+        from .graphs import build_all
+        from .replay import fixture
+        from .runtime import run_episode
+        graphs = build_all(out / "graphs")
     rows = []
     for index, (task, seed, repetition) in enumerate(e.trials):
         trial_id = f"{index:04d}-{task}-s{seed}-r{repetition}"
         folder = out / "runs" / trial_id
         row = {"trial_id": trial_id, "task_id": task, "seed": seed, "repetition": repetition,
-               "status": "error", "task_success": False, "mode": e.data["mode"]}
+               "status": "error", "task_success": False, "mode": e.data["mode"], "harness": e.harness}
         try:
-            if e.data["mode"] == "replay":
+            if e.harness != "native-gap":
+                from .upstream import run_trial
+                row.update(run_trial(e, task, seed, repetition, folder, live=live))
+            elif e.data["mode"] == "replay":
                 scenario, backend, policy = fixture(task, seed)
                 limits = {k: v for k, v in e.limits.items() if k != "command_timeout_s"}
                 report = run_episode(scenario, backend, policy, graphs / task, folder, **limits)
@@ -91,14 +97,16 @@ def run(experiment, output, *, live=False):
             row["error_type"] = type(exc).__name__
         write_json(out / "trials" / f"{trial_id}.json", row)
         rows.append(row)
-        if e.data["mode"] == "se3" and row["status"] == "error":
+        if e.data["mode"] != "replay" and row["status"] == "error":
             break  # A disconnected/unresolved station must not start another episode.
-    summary = {"schema_version": 1, "mode": e.data["mode"], "planned": len(e.trials), "attempted": len(rows),
+    summary = {"schema_version": 1, "mode": e.data["mode"], "harness": e.harness, "planned": len(e.trials), "attempted": len(rows),
                "completed": sum(r["status"] == "completed" for r in rows),
                "successful": sum(r["task_success"] is True for r in rows),
                "unattempted": len(e.trials) - len(rows), "trials": rows,
                "ranking_eligible": False, "official_submission": False,
-               "interpretation": "Known-answer software diagnostics only" if e.data["mode"] == "replay" else "Custom YAM task adaptation; operator and local scores retained separately"}
+               "interpretation": {"replay": "Known-answer software diagnostics only",
+                                  "se3": "Custom YAM task adaptation; operator and local scores retained separately",
+                                  "upstream": "Upstream workflow evaluation; native and independent local scores retained separately; budgets and task ports require validation"}[e.data["mode"]]}
     write_json(out / "summary.json", summary)
     return summary
 
@@ -152,12 +160,13 @@ def session_outcome(session, policy):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description="Configure and run the native GaP task suite")
+    parser = argparse.ArgumentParser(description="Configure GaP, CaP-X, ASPIRE or ENPIRE for the 13-task suite")
     sub = parser.add_subparsers(dest="command", required=True)
-    init = sub.add_parser("init", help="create local replay and SE3 config templates")
+    init = sub.add_parser("init", help="create local configurations for all four harnesses")
     init.add_argument("--directory", type=Path, required=True)
     init.add_argument("--gap-root", type=Path, required=True)
-    for name in ("doctor", "batch"):
+    sub.add_parser("harnesses", help="list implemented upstream entry points")
+    for name in ("doctor", "plan", "batch"):
         command = sub.add_parser(name)
         command.add_argument("--config", type=Path, required=True)
         if name == "batch":
@@ -168,12 +177,20 @@ def main(argv=None):
         if args.command == "init":
             print(initialize(args.directory, args.gap_root))
             return 0
+        if args.command == "harnesses":
+            from .upstream import UPSTREAMS
+            print(json.dumps({"native-gap": {"name": "Native GaP", "revision": GAP_COMMIT,
+                                             "modes": ["replay", "se3"]}, **UPSTREAMS}, indent=2))
+            return 0
         e = Experiment(args.config)
-        if args.command == "doctor":
+        if args.command in {"doctor", "plan"}:
             status = preflight(e)
+            if args.command == "plan":
+                status["trials"] = [{"task_id": t, "seed": s, "repetition": r} for t, s, r in e.trials]
+                status["execution_requested"] = False
             print(json.dumps(status, indent=2))
             return 0 if status["configuration_ready"] else 2
-        if e.data.get("gap_root"):
+        if e.harness == "native-gap" and e.data.get("gap_root"):
             gap = e.resolve(e.data["gap_root"])
             sys.path[:0] = [str(gap), str(gap / "gap-core/src")]
         summary = run(e, args.output, live=args.live)

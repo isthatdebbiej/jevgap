@@ -13,6 +13,7 @@ establish physical task readiness or reproduce the complete GaP research system.
 - [x] Stateless Responses model adapter, explicit model checking, token records and persistent request reservations.
 - [x] Offline tests through all 13 native graphs and all 13 SDK callback lifecycles, plus failure paths.
 - [x] Separate CI job for the task suite; historical Rust/moving-cube checks remain separate.
+- [x] Configurable upstream CaP-X, ASPIRE saved-policy and ENPIRE TrialRunner adapters with pinned profiles, all 13 task-binding templates, preflight, process limits and separate native/local/operator outcomes. See [harness guide](HARNESSES.md).
 
 These graphs are supplied scaffolding that route model-selected semantic actions.
 They do not currently test an AI coding agent generating or repairing graph
@@ -117,9 +118,10 @@ budgets and frozen checkpoint evaluation; it is not implemented by this runner.
 ## 5. Code still needed before the four-way study
 
 - [ ] Common agent-development interface: propose/edit, validate, run, inspect traces, revise; immutable artifacts for each revision.
-- [ ] Faithful CaP baseline with the shared grounded primitive API and specified feedback mode.
-- [ ] ENPIRE and ASPIRE station adapters preserving their own improvement workflows; pinned revisions and reproducer checks.
-- [ ] Multi-harness experiment manifest, development budget enforcement, frozen evaluation mode and paired aggregation with confidence intervals.
+- [x] Multi-harness selection, trial manifests, native subprocess invocation, failure preservation and score normalization.
+- [ ] CaP-X task environment ports with the shared grounded primitive API and specified feedback mode; native launcher adapter is implemented.
+- [ ] ENPIRE and ASPIRE task/station ports and complete policy-development workflows; evaluation adapters are implemented, full search/repair/training reproduction is still separate work.
+- [ ] Cross-harness development budget enforcement, frozen evaluation protocol and paired aggregation with confidence intervals.
 - [ ] Optional providers for Jev/other models using the action-and-memory contract; verify exact model identity and usage accounting.
 - [ ] Optional XPolicyLab path if deploying a separate model server becomes useful; do not implement it merely to duplicate the working Python API route.
 

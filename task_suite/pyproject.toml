@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "rtbench-tasks"
 version = "0.1.0"
-description = "SE3 task contracts, local scoring and native GaP episode execution"
+description = "SE3 task contracts, native GaP execution and configurable upstream harness adapters"
 requires-python = ">=3.12,<3.13"
 dependencies = []
 

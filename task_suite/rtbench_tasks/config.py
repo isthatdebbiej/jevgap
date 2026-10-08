@@ -35,7 +35,7 @@ class Experiment:
         self.data = read_json(self.path)
         d = self.data
         allowed = {"schema_version", "name", "mode", "tasks", "seeds", "repetitions", "model",
-                   "station_config", "scenario_dir", "gap_root", "limits"}
+                   "station_config", "scenario_dir", "gap_root", "limits", "harness", "harness_config"}
         if not isinstance(d, dict) or set(d) - allowed:
             raise ValueError("unknown experiment fields")
         if d.get("schema_version") != 1:
@@ -44,8 +44,14 @@ class Experiment:
             raise ValueError("model and limits must be objects")
         if not isinstance(d.get("name"), str) or not re.fullmatch(r"[A-Za-z0-9_-]+", d["name"]):
             raise ValueError("name must use letters, digits, underscores or hyphens")
-        if d.get("mode") not in {"replay", "se3"}:
-            raise ValueError("mode must be replay or se3")
+        from .upstream import HARNESSES
+        self.harness = d.get("harness", "native-gap")
+        if self.harness not in HARNESSES:
+            raise ValueError(f"harness must be one of {', '.join(HARNESSES)}")
+        if d.get("mode") not in {"replay", "se3", "upstream"}:
+            raise ValueError("mode must be replay, se3 or upstream")
+        if (self.harness == "native-gap") == (d["mode"] == "upstream"):
+            raise ValueError("native-gap uses replay/se3; cap, aspire and enpire require mode=upstream")
         self.tasks = list(TASKS) if d.get("tasks") == "all" else d.get("tasks")
         if not isinstance(self.tasks, list) or not self.tasks or any(not isinstance(t, str) or t not in TASKS for t in self.tasks):
             raise ValueError("tasks must be all or a nonempty list of known task ids")
@@ -112,6 +118,13 @@ def preflight(experiment):
     """Report configuration blockers, never claim a physical capability was tested."""
     e = experiment
     blockers, notes = [], []
+    if e.harness != "native-gap":
+        from .upstream import preflight_upstream
+        blockers, notes = preflight_upstream(e)
+        if e.data.get("model") != {"provider": "upstream"}:
+            blockers.append("upstream runs require model={provider: upstream}; configure the model in the native workflow")
+        blockers.extend(_scenario_blockers(e))
+        return _readiness(e, blockers, notes)
     gap = e.data.get("gap_root")
     if not gap or not (e.resolve(gap) / "gap/runtime/executor.py").is_file():
         blockers.append("gap_root must point to the pinned graph-as-policy checkout")
@@ -146,17 +159,7 @@ def preflight(experiment):
                 blockers.append("press-by-number: confirm the two-stage-v1 protocol with SE3")
         except (KeyError, OSError, TypeError, ValueError) as exc:
             blockers.append(f"station configuration unavailable ({type(exc).__name__})")
-        identities = set()
-        for task, seed, repetition in e.trials:
-            try:
-                s = e.scenario(task, seed, repetition)
-                if s.id in identities:
-                    blockers.append(f"duplicate scenario id: {s.id}")
-                identities.add(s.id)
-                if s.layout.startswith(("UNCONFIGURED", "fixture", "replay")):
-                    blockers.append(f"{task}/{seed}/{repetition}: replace the diagnostic layout with a calibrated layout")
-            except (KeyError, OSError, TypeError, ValueError) as exc:
-                blockers.append(f"{task}/{seed}/{repetition}: scenario unavailable or invalid ({type(exc).__name__})")
+        blockers.extend(_scenario_blockers(e))
         model = e.model_config()
         if model.get("provider") != "openai-responses":
             blockers.append("SE3 runs currently require model.provider=openai-responses")
@@ -175,6 +178,25 @@ def preflight(experiment):
             except importlib.metadata.PackageNotFoundError:
                 blockers.append(f"install {package}==0.0.1")
         notes.append("SE3 login/Tailscale and physical capability are checked at deployment, not by this offline preflight.")
-    return {"schema_version": 1, "mode": e.data["mode"], "task_count": len(e.tasks),
+    return _readiness(e, blockers, notes)
+
+
+def _scenario_blockers(e):
+    blockers, identities = [], set()
+    for task, seed, repetition in e.trials:
+        try:
+            s = e.scenario(task, seed, repetition)
+            if s.id in identities:
+                blockers.append(f"duplicate scenario id: {s.id}")
+            identities.add(s.id)
+            if s.layout.startswith(("UNCONFIGURED", "fixture", "replay")):
+                blockers.append(f"{task}/{seed}/{repetition}: replace the diagnostic layout with a calibrated layout")
+        except (KeyError, OSError, TypeError, ValueError) as exc:
+            blockers.append(f"{task}/{seed}/{repetition}: scenario unavailable or invalid ({type(exc).__name__})")
+    return blockers
+
+
+def _readiness(e, blockers, notes):
+    return {"schema_version": 1, "mode": e.data["mode"], "harness": e.harness, "task_count": len(e.tasks),
             "trial_count": len(e.trials), "configuration_ready": not blockers,
             "hardware_validated": False, "blockers": blockers, "notes": notes}
