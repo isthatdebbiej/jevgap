@@ -1,4 +1,8 @@
-# Continuous-loop development results
+# Historical A/B continuous-loop development results
+
+These records preserve the earlier Astra/Jev experiments. The current testing
+scope is GaP, CaP-X, ASPIRE and ENPIRE on all 13 tasks; see the
+[four-harness testing plan](../../../task_suite/TESTING_PLAN.md).
 
 These are development runs on WSL, separate from the original one-authorization
 pickup demo. Run configurations and individual episode summaries are retained

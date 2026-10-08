@@ -1,7 +1,11 @@
-# Testing on a physical YAM
+# Historical A/B experiment: physical YAM bring-up
 
-**Current status: no hardware action bridge is implemented or tested.** The
-included runners are simulation-only. This guide describes the staged path to a
+This guide applies to the legacy moving-cube/Astra/Jev runners. For the current
+GaP, CaP-X, ASPIRE and ENPIRE study, use the [four-harness testing plan](../task_suite/TESTING_PLAN.md),
+[harness setup](../task_suite/HARNESSES.md) and [native GaP SE3 driver contract](../task_suite/DRIVER.md).
+
+**Legacy runner status: no hardware action bridge is implemented or tested.**
+Those runners are simulation-only. This guide describes the staged path to a
 physical A/B experiment; it is not a command to run the simulation controller on
 hardware.
 

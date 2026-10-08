@@ -1,4 +1,10 @@
-# Calibrated SE3 driver contract
+# Native GaP calibrated SE3 driver contract
+
+The [testing plan](TESTING_PLAN.md) covers GaP, CaP-X, ASPIRE and ENPIRE. This
+interface is specific to the native GaP SE3 bridge. The other harnesses connect
+their native environments to the same calibrated station capabilities and
+independent evaluator through the [upstream adapter contract](HARNESSES.md#task-and-evaluator-export-contract).
+Selecting a different harness does not automatically adapt this Python interface.
 
 `rtbench_tasks.se3.GraphPolicy` adapts native GaP episodes to SE3 0.0.1's
 `initialize` / `infer` / `reset` lifecycle. It does not implement a robot-specific

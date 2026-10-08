@@ -1,4 +1,8 @@
-# Select a harness
+# Select a harness for the four-harness study
+
+The current study tests **GaP, CaP-X, ASPIRE and ENPIRE across all 13 tasks**.
+Select one harness per batch and use the shared task/layout/seed matrix across
+the four configurations. All four are in scope; track their readiness separately.
 
 The batch runner accepts `harness: "native-gap"`, `"cap"`, `"aspire"` or
 `"enpire"`. CaP, ASPIRE and ENPIRE run their upstream code in a separate Python
@@ -6,8 +10,9 @@ process. They do not fall back to GaP or to a local imitation.
 
 **This is an evaluation adapter layer.** It does not supply the robot's task
 implementations, reproduce every upstream development/search workflow, or make
-the four methods experimentally equivalent. Native GaP remains the first
-commissioning target. Station credentials alone are insufficient for any method.
+the four methods experimentally equivalent. Commission a common pilot task
+through each harness, then expand task coverage. Station credentials alone are
+insufficient for any method.
 
 ## Implemented entry points
 
@@ -225,7 +230,10 @@ for every attempt. `plan` and `doctor` do not import upstream plugins, connect t
 services, or start robot/model processes. `configuration_ready` checks files,
 identities and Git revision, not dependency compatibility or task performance.
 The explicit `--live` is required even for an upstream simulation because native
-workflows can call models or services. No extra interactive confirmation is used.
+workflows can call models or services. Agents must ask the user before a run
+that spends OpenAI API credits, including calls from an upstream workflow.
+The `--live` flag does not replace that approval; the CLI itself has no extra
+interactive confirmation.
 
 A subprocess timeout/exception or missing result/evidence stops the batch and
 retains the attempt. The worker and its process group/tree are terminated on
@@ -239,7 +247,7 @@ details. Keep the generated `local-config/` and `results/` directories private.
 Use upstream credential files or authenticated model services, never inline
 API keys in `args`.
 
-## Before calling it a four-way benchmark
+## Validation required for four-harness results
 
 JevGaP's `limits` are requests for upstream task ports; only the subprocess wall
 timeout and ENPIRE's `max_steps` are directly enforced by these adapters. Native

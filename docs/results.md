@@ -1,4 +1,9 @@
-# Results
+# Historical Astra/Jev A/B results
+
+These measurements belong to the earlier moving-cube and executor experiments.
+Results for the current GaP, CaP-X, ASPIRE and ENPIRE study must follow the
+[four-harness testing plan](../task_suite/TESTING_PLAN.md) and report coverage
+and outcomes for its own task matrix.
 
 ## Moving cube: one matched pair
 

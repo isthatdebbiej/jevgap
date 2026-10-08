@@ -1,18 +1,18 @@
-# SE3 thirteen-task suite
+# Four-harness SE3 thirteen-task suite
 
-All 13 tasks on the hardware team's [Task Design page](https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380) now have task contracts, native GaP graphs, skill declarations, local scoring and known-answer replay fixtures. The task-specific sources are recorded in `rtbench_tasks/catalog.py` and every run report.
+The testing scope is **GaP, CaP-X, ASPIRE and ENPIRE across all 13 tasks** on the hardware team's [Task Design page](https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380). Every task has a shared contract, local rubric and scenario template; native GaP graphs, skill declarations and known-answer replay fixtures are also supplied. The task-specific sources are recorded in `rtbench_tasks/catalog.py` and run artifacts.
 
-**Status:** native graph/replay execution, a configurable batch runner, a stateless Responses model adapter and the SE3 0.0.1 Python lifecycle bridge are implemented and tested offline. Physical execution requires an explicitly enabled run and a calibrated station driver; perception, motion controllers and physical evaluation have not been validated. Replay success is not robot success or a model benchmark result.
+**Status:** the configurable batch runner supports all four harnesses. Native GaP graph/replay execution, its stateless Responses model adapter and its SE3 0.0.1 bridge are implemented, alongside upstream CaP-X, ASPIRE and ENPIRE evaluation adapters. Offline tests cover integration behavior. Physical execution requires calibrated station drivers and native task/environment implementations; these and the full policy-development workflows remain to be validated. Replay success is not robot success or a model benchmark result.
 
-Start with [configuration and setup](SETUP.md), the [station driver contract](DRIVER.md), and the [plan for all 13 tasks followed by the four-harness comparison](TESTING_PLAN.md).
+Start with [harness selection and setup](HARNESSES.md) and the [four-harness, 13-task testing plan](TESTING_PLAN.md). The [coordinator / native GaP setup](SETUP.md) and [native GaP station driver contract](DRIVER.md) describe that harness's SE3 integration.
 
 **Harness selection:** the batch configuration now supports `native-gap`, `cap`,
-`aspire` and `enpire`. The additional adapters invoke upstream CaP-X, ASPIRE's
+`aspire` and `enpire`. The upstream adapters invoke CaP-X, ASPIRE's
 saved-policy runner and ENPIRE's TrialRunner in separate environments. See
 [native workflows, configuration and remaining task-port requirements](HARNESSES.md).
 These adapters do not implement a matched four-way policy-development study.
 
-## Run
+## Native GaP offline diagnostic
 
 Use Python 3.12 and the project's pinned `vendor/graph-as-policy` checkout. From this directory:
 
@@ -48,7 +48,7 @@ The official descriptions do not specify numeric alignment, insertion, stability
 
 `press-by-number` explicitly requires `truth.protocol = "two-stage-v1"`, following the task's scoring table: first count, confirm, second count, confirm. Its prose suggests a different confirmation sequence. Resolve this with SE3/upstream before collecting experimental results.
 
-## Graph, skills and tool catalog
+## Native GaP graph, skills and tool catalog
 
 Each native graph loops through `se3.observe` → `se3.decide` → the selected skill subgraph → an independent checkpoint → observation. The model selects the object, target and orientation; the harness does not copy a ground-truth target into the action. `finish` and `abort` terminate. A fixed call cap bounds the loop.
 
@@ -56,7 +56,7 @@ The reusable `se3-place`, `se3-stack`, `se3-hang`, `se3-cover`, `se3-uncover`, `
 
 The model receives the same task-appropriate semantic skill catalog for every provider. Catalog availability does not imply that a robot implements that skill: backend capabilities are checked separately. These bundles depend on the harness-provided `se3.dispatch` tool and cannot control a robot by themselves.
 
-## Connect a model and simulator
+## Native GaP model and simulator interface
 
 Implement the interfaces in `contracts.py` and call `runtime.run_episode`, or use:
 
@@ -87,6 +87,6 @@ This local rubric conservatively requires release at all intermediate tiers and 
 
 Each trial writes `report.json`, public decision/command `events.json`, private `evaluation.json`, and native GaP traces. Reports record model, seed, layout, graph/scenario hashes, limits, source page, checkpoints, stop reason, score and optional RRD reference. A completed graph and a successful task are reported separately. All reports currently set `ranking_eligible=false` and `official_submission=false`.
 
-The current priority is all 13 tasks with native GaP, then a four-harness comparison. Start with one commissioned task before expanding the physical batch to all 13. A single run per task is a feasibility check; repeated held-out trials are needed for a research result. Layout labels in replay fixtures are identifiers, not calibrated physical placement plans.
+The current study covers all four harnesses on all 13 tasks. Commission a common pilot task through each harness, then expand task coverage while tracking completed, failed and blocked harness/task combinations. A single run per combination is a feasibility check; repeated held-out trials are needed for a research result. Layout labels in replay fixtures are identifiers, not calibrated physical placement plans.
 
 Future [RoboDojo submission](https://robodojo-benchmark.com/leaderboard/protocol) still requires the official evaluator, required robots/seeds and submission artifacts. No XPolicyLab transport, official simulator assets or leaderboard integration is claimed by this pilot package.

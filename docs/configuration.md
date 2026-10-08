@@ -1,5 +1,33 @@
 # Configuration
 
+## Four-harness task suite
+
+The current study selects GaP, CaP-X, ASPIRE or ENPIRE through an experiment
+configuration. Generate the private templates with the coordinator's `init`
+command, then choose the matching file for each batch:
+
+| Harness | Generated experiment | Mode | Harness-specific settings |
+|---|---|---|---|
+| GaP | `replay.json` or `se3.local.json` | `replay` or `se3` | GaP checkout; for SE3, station/driver and Responses model configuration |
+| CaP-X | `cap.local.json` | `upstream` | Upstream profile plus native task YAML bindings |
+| ASPIRE | `aspire.local.json` | `upstream` | Upstream profile plus saved programs and native Hydra task configuration |
+| ENPIRE | `enpire.local.json` | `upstream` | Upstream profile plus environment/policy factories and their configuration |
+
+Use the same task inventory, prescribed layouts, seeds and repetitions across
+the four configurations. A batch runs one selected harness; the study matrix
+tracks all four. `plan` shows selected trials and `doctor` reports configuration
+blockers without launching native runners. Start with [harness setup](../task_suite/HARNESSES.md)
+for the commands, profile fields and independent evidence contract.
+
+[Coordinator installation](../task_suite/SETUP.md) also documents the native GaP
+station/model configuration. Its Responses budget ledger applies to native GaP;
+upstream workflows use their own model settings and spending controls. Match and
+record those controls as required by the [testing plan](../task_suite/TESTING_PLAN.md).
+
+## Historical Astra/Jev A/B defaults
+
+The settings below belong to the earlier moving-cube and executor experiments.
+
 | Setting | Current default |
 |---|---|
 | Python | 3.12.3 |
@@ -17,7 +45,7 @@
 Export variables explicitly. Never place real keys in a config or source file.
 The preflight reads only whether the provided files exist and are nonempty.
 
-The providers' Python constants define the current model, endpoint, timeout and
+The legacy providers' Python constants define their model, endpoint, timeout and
 spending policy. `ASTRA_BUDGET_LEDGER` and `JEV_BUDGET_LEDGER` can relocate ledgers.
 Keep each ledger shared by all pilot workers, and retain it between runs. Removing
 or changing it resets local accounting. Default caps are $100 and $5, respectively;

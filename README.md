@@ -1,24 +1,36 @@
 # JevGaP
 
-## Current testing work: all 13 SE3 tasks
+## Current testing scope: four harnesses across all 13 SE3 tasks
 
-The native GaP task suite now includes configuration templates, batch execution,
-an SE3 0.0.1 Python SDK bridge and a stateless model adapter. Its graph and SDK
-lifecycle checks run offline. Physical testing still requires station access and
-a calibrated perception/motion/evaluation driver.
+JevGaP's testing program covers **GaP, CaP-X, ASPIRE and ENPIRE** on the same
+13-task inventory. Each harness is selected through configuration. The study
+examines policy execution and AI-agent-led policy development, with matched
+tasks, observations, evaluation criteria and declared resource budgets.
 
-Start with the [setup guide](task_suite/SETUP.md), [driver contract](task_suite/DRIVER.md)
-and [testing plan](task_suite/TESTING_PLAN.md). The order is all 13 tasks with
-native GaP, then GaP/CaP and the broader ENPIRE/ASPIRE comparison. The existing
-Astra/Jev moving-cube experiment below remains a separate experiment.
+| Harness | Selector | Implemented evaluation entry point |
+|---|---|---|
+| GaP | `native-gap` | Native graph executor, replay diagnostics and SE3 Python Policy bridge |
+| CaP-X | `cap` | Upstream headless code-generation and execution workflow |
+| ASPIRE | `aspire` | Upstream saved-policy runner |
+| ENPIRE | `enpire` | Upstream TrialRunner with supplied policy and environment |
 
-The batch runner also accepts `harness: "cap"`, `"aspire"` and `"enpire"` using
-their upstream workflows and separate Python environments. See the
-[harness selection guide](task_suite/HARNESSES.md) for configuration, native
-entry points, supported evaluation scope and remaining task-port requirements.
+All four belong to the current testing scope. Implementation readiness differs:
+task contracts, configurations, batch execution and adapter checks exist, while
+physical trials require calibrated perception/control, native task bindings and
+station access. Full policy-development workflows and matched budget enforcement
+also remain to be connected and validated. Offline checks establish integration
+behavior; they do not establish robot performance or a harness ranking.
 
-An experimental benchmark for graph-based robot policies: **native GaP + Astra**
-versus **GaP + Jev + a custom Rust executor**.
+Start with [harness selection and configuration](task_suite/HARNESSES.md), the
+[four-harness testing plan](task_suite/TESTING_PLAN.md), and
+[coordinator / native GaP SE3 setup](task_suite/SETUP.md). The plan defines the
+shared task matrix, commissioning requirements and comparison protocol.
+
+## Historical Astra/Jev A/B experiments
+
+The moving-cube, continuous-loop and Rust-executor experiments below retain
+their original methods and results. Their A/B labels describe **native GaP +
+Astra** versus **GaP + Jev + a custom Rust executor** within those experiments.
 
 The same policy graph produces action proposals for a shared controller. This
 repository includes a Rust executor, Python workers, MuJoCo YAM demonstrations,
@@ -35,7 +47,7 @@ timing logs and reproducible result summaries.
 [Results and limitations](docs/results.md) · [Architecture](docs/architecture.md) ·
 [YAM hardware guide](docs/hardware.md)
 
-## How GaP, Jev and the Rust executor work together
+## Historical A/B architecture
 
 **GaP supplies the workflow format and the native executor used by A.** We build
 on [graph-robots/graph-as-policy](https://github.com/graph-robots/graph-as-policy),
@@ -85,7 +97,7 @@ The purpose is to measure the complete decision-to-action path. Since B changes
 both execution and the decision model, an A/B timing difference cannot tell us
 how much came from Jev versus the Rust executor.
 
-## Measured example
+## Historical moving-cube result
 
 One matched moving-cube episode per system:
 
@@ -105,7 +117,7 @@ rule could authorize the same pickup. The comparison changes execution **and**
 inference, so it does not isolate the Rust executor's contribution. No physical
 hardware result or semantic-quality equivalence is claimed.
 
-## Quick start
+## Run the historical A/B experiments
 
 Use Ubuntu 24.04 or WSL2 for development. Use native Linux for published timing
 studies. Keep the checkout, environment and outputs on Linux storage when possible.
@@ -173,6 +185,7 @@ late-change pairs. `--diagnostic` substitutes local decisions for plumbing tests
 ```text
 crates/runtime/       Rust required-input scheduler and Unix-socket transport
 scripts/              Executors, providers, simulation runners and analysis
+task_suite/           Four-harness task contracts, configuration, adapters and scoring
 workflows/yam_pickup/  Proposal-only GaP workflow
 tests/                Gate, importer, contact and budget checks
 docs/                 Methods, results, hardware guide and selected evidence
@@ -184,7 +197,7 @@ acyclic tool graphs with explicit input references. The selected linear graph
 has native/Rust conformance evidence. Loops, streams, conditional branches,
 subgraphs, recovery and arbitrary robot tools are rejected.
 
-**Hardware execution is not implemented.** The simulation torque controller and
+**The historical A/B runners do not implement physical dispatch.** The simulation torque controller and
 contact model must not be copied directly to a physical arm. The
 [hardware guide](docs/hardware.md) describes SDK bring-up, calibration, shadow
 testing and the controller bridge that must be implemented before A/B trials.
@@ -196,10 +209,10 @@ Project code is licensed under [Apache-2.0](LICENSE). GaP, I2RT and other
 dependencies retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
 This project is independent of the upstream projects and model providers.
 
-## Continuous-loop development
+## Historical continuous-loop development
 
 See [the continuous benchmark](docs/continuous.md) for repeated decisions, stale-response rejection, latency breakdowns and an experimental camera-derived state path. Offline checks use identical local workers and are separate from the Astra/Jev results above.
 
-## Station integration
+## Legacy station integration
 
 The [station runner](docs/station.md) provides observation-only shadow mode, fake-station fault tests, and a MuJoCo YAM adapter. Models and executors are selected independently of the station. Start with the offline examples; physical dispatch is not implemented. The [hardware worksheet](docs/station-worksheet.md) lists the information needed from an evaluation station.

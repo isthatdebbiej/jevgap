@@ -1,4 +1,9 @@
-# Hardware station worksheet
+# Legacy station runner worksheet
+
+The interfaces below belong to the [legacy station runner](station.md). For the
+current four-harness study, use [harness setup](../task_suite/HARNESSES.md) and
+the [native GaP SE3 driver contract](../task_suite/DRIVER.md) to map the same
+hardware information into the selected harness's native environment.
 
 Fill this out privately with the evaluation team. Unknown entries remain unknown;
 simulation defaults are not recommended hardware limits.

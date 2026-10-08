@@ -1,4 +1,34 @@
-# Architecture and supported semantics
+# Architecture
+
+## Current four-harness task suite
+
+The study covers GaP, CaP-X, ASPIRE and ENPIRE on the same 13-task inventory.
+`scripts/task_suite.py` loads the experiment configuration, checks readiness and
+dispatches each selected task/seed/repetition through its configured harness.
+
+| Selector | Execution path |
+|---|---|
+| `native-gap` | Native GaP graphs with a replay backend or the SE3 Python Policy bridge |
+| `cap` | Separate upstream interpreter invoking CaP-X's headless launcher |
+| `aspire` | Separate upstream interpreter invoking ASPIRE's saved-policy runner |
+| `enpire` | Separate upstream interpreter invoking ENPIRE's TrialRunner and configured factories |
+
+The coordinator records the trial matrix, provenance, attempts and outcomes.
+All paths use the shared local task rubric; upstream-native outcomes and SE3
+operator results are retained separately. Native environments remain responsible
+for calibrated perception/control, task resets, observation exposure and measured
+evidence. Upstream model budgets and development workflows require their own
+configuration and validation.
+
+See [harness entry points and contracts](../task_suite/HARNESSES.md),
+[native GaP driver interface](../task_suite/DRIVER.md) and the
+[four-harness testing plan](../task_suite/TESTING_PLAN.md). Adapter availability
+does not establish physical readiness or a matched policy-development study.
+
+## Historical A/B architecture and supported semantics
+
+The following describes the earlier Astra/Jev executor experiment. Its A/B
+labels and supported graph subset apply to that experiment.
 
 ```text
 Observation → GaP policy graph → ActionProposal → common gate → controller
@@ -19,7 +49,7 @@ importer rejects ambiguous cross-frontier activation, noncausal references,
 loops, conditionals, nested graphs, streams, recovery and unapproved tools.
 Only the selected linear fixture has end-to-end native/Rust equivalence evidence.
 
-The current runtime API is synchronous `run(state, execution_id)` with one
+The legacy runtime API is synchronous `run(state, execution_id)` with one
 observation in flight. Streaming, cancellation, distributed execution and a
 general asynchronous observation API are not implemented.
 

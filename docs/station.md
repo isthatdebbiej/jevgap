@@ -1,4 +1,8 @@
-# Evaluation station integration
+# Legacy station runner integration
+
+This page describes `scripts/station.py` and its A/B simulation/shadow workflow.
+The current GaP, CaP-X, ASPIRE and ENPIRE task suite uses the separate
+[harness configuration](../task_suite/HARNESSES.md) and [testing plan](../task_suite/TESTING_PLAN.md).
 
 The station package separates observation access, perception, model execution,
 action admission and controller feedback. The first implementations are a fake

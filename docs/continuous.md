@@ -1,4 +1,8 @@
-# Continuous observation and decision benchmark
+# Historical A/B continuous observation and decision benchmark
+
+This page retains the earlier Astra/Jev continuous-loop experiment. The current
+testing program covers GaP, CaP-X, ASPIRE and ENPIRE across all 13 tasks; see the
+[four-harness testing plan](../task_suite/TESTING_PLAN.md).
 
 The original moving-cube demo requests one pickup authorization. The continuous
 runner requests decisions throughout the episode while physics and observations

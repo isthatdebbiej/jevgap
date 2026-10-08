@@ -1,13 +1,15 @@
-# Native GaP / SE3 setup
+# Coordinator installation and native GaP / SE3 setup
 
-The batch runner covers all 13 task contracts. The SE3 SDK bridge and Responses
-model adapter can be tested offline. **Physical testing still needs a calibrated
-station driver implementing perception, motion and independent verification.**
-Station IDs alone do not provide those capabilities. See [driver contract](DRIVER.md)
-and [remaining work and comparison design](TESTING_PLAN.md).
+The testing program covers **GaP, CaP-X, ASPIRE and ENPIRE on all 13 tasks**.
+This page installs the shared coordinator and describes the native GaP SE3
+route. Use [harness setup](HARNESSES.md) to select and configure the CaP-X,
+ASPIRE or ENPIRE upstream route. `init` creates templates for all four harnesses.
 
-For configurable CaP-X, ASPIRE and ENPIRE upstream adapters, see
-[harness setup](HARNESSES.md). `init` now creates templates for all four harnesses.
+The native GaP SE3 SDK bridge and Responses model adapter can be tested offline.
+Physical testing requires calibrated perception, control and independent
+verification, connected through each harness's native task/environment adapter.
+Station IDs alone do not provide those capabilities. See the [native GaP driver
+contract](DRIVER.md) and [four-harness testing plan](TESTING_PLAN.md).
 
 ## Install and create configuration
 
@@ -40,7 +42,7 @@ ignore file to protect local settings. Every batch also requires a new output
 directory. Replay uses known answers and synthetic evidence: its passing scores
 test software contracts, not physics, model quality or robot performance.
 
-## Files to fill in later
+## Native GaP / SE3 files to configure
 
 | Generated file | Settings |
 |---|---|
@@ -75,7 +77,7 @@ declaration, not something `doctor` can independently verify. For
 with SE3 before setting `press_protocol` and scenario `truth.protocol` to
 `two-stage-v1`.
 
-## Preflight and physical runs
+## Native GaP preflight and physical runs
 
 ```powershell
 .venv-tasks/Scripts/python scripts/task_suite.py doctor --config local-config/se3/se3.local.json
@@ -86,6 +88,9 @@ offline checks passed; `hardware_validated` remains false. Preflight does not
 import a driver, log in, contact a model, test connectivity or execute motion.
 Freeze numeric geometry/timing tolerances and the driver implementation before
 collecting results. Start with a single validated task and one scenario.
+
+For an agent-assisted run, ask the user for approval before spending OpenAI API
+credits. The `--live` flag enables execution; it does not replace that approval.
 
 Once the driver and station have been commissioned, the explicit live command is:
 
@@ -99,7 +104,7 @@ episode. An integration failure stops the batch, records the failed attempt and
 leaves remaining trials unattempted. No automatic motion retry or batch resume
 is implemented; reconcile the station and use a new output directory.
 
-## Model settings and budgets
+## Native GaP model settings and budgets
 
 The implemented live provider is `openai-responses`, with strict structured
 `action` + `memory` output. Set an exact available model ID. If the provider
@@ -132,7 +137,7 @@ aged before dispatch. Measure latency and choose the experimental freshness
 limit explicitly. Increasing a limit does not validate a dynamic scene. Driver
 planning must still check current geometry and object identity.
 
-## Artifacts and interpretation
+## Native GaP artifacts and interpretation
 
 Each batch saves a configuration hash, pinned GaP revision, generated graphs,
 trial matrix and per-trial status. Episode directories contain the graph trace,
