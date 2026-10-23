@@ -1,0 +1,42 @@
+{
+  "name": "insert-tubes",
+  "instruction": "Insert both capped tubes one by one into the two marked wells of the orange rack, upright to the marked depth. Return both arms to origin.",
+  "reset_instruction": "Two capped specimen tubes, orange rack with two marked wells and depth witness marks. Begin both tubes outside rack. Trace rack footprint and record fully seated reference. Record matched initial layout and neutral poses for both arms. Confirm ACT start pose, all three camera views, open empty grippers and station stop control. Reset to the identical scene between policies. Quality is adapted to 0->50->100; not the three-tube rubric.",
+  "success_question": "Both tubes upright to depth in separate marked wells, rack in footprint and arms at origin. Every qualifying object must be released, settled for 2 seconds and unsupported by a gripper. Full success also requires both arms at the recorded origin.",
+  "rubric": {
+    "version": "se3-interval-v1",
+    "source": "https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380",
+    "variant": "se3-adapted-two-tubes",
+    "comparable_to_robodojo": false,
+    "milestones": [
+      {
+        "points": 0,
+        "criterion": "No qualifying milestone reached."
+      },
+      {
+        "points": 50,
+        "criterion": "One tube upright at marked depth in a marked well, gripper open."
+      },
+      {
+        "points": 100,
+        "criterion": "Both tubes upright to depth in separate marked wells, rack in footprint and arms at origin."
+      }
+    ],
+    "intervals": [
+      {
+        "phases": [
+          "Did it grasp and retain tube 1?",
+          "Did it carry tube 1 above its unused marked well and align vertically?",
+          "Did it insert tube 1 to marked depth, release and leave it upright? Preserve earlier qualifying units."
+        ]
+      },
+      {
+        "phases": [
+          "Did it grasp and retain tube 2?",
+          "Did it carry tube 2 above its unused marked well and align vertically?",
+          "Did it insert tube 2 to marked depth, release and leave it upright? Verify all completed units and return both arms to origin."
+        ]
+      }
+    ]
+  }
+}

@@ -1,6 +1,12 @@
+# Current ACT experiment
+
+Use [OPERATOR_HANDOFF.md](OPERATOR_HANDOFF.md) and [READINESS.md](READINESS.md) for Qwen GaP/CaP. The physical proposal has ten tasks; three supplemental tasks and four precision/memory variants are separated explicitly. The frozen operator-packet-v3 contains full scoring and commissioning instructions. Older semantic-driver/four-harness workflows below are retained for reference.
+
+## Legacy implementation
+
 # Four-harness SE3 thirteen-task suite
 
-The testing scope is **GaP, CaP-X, ASPIRE and ENPIRE across all 13 tasks** on the hardware team's [Task Design page](https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380). Every task has a shared contract, local rubric and scenario template; native GaP graphs, skill declarations and known-answer replay fixtures are also supplied. The task-specific sources are recorded in `rtbench_tasks/catalog.py` and run artifacts.
+The testing scope is **GaP, CaP-X, ASPIRE and ENPIRE across the 13-task local catalog**, related to the hardware team's [Task Design page](https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380). Every task has a shared contract, local rubric and scenario template; native GaP graphs, skill declarations and known-answer replay fixtures are also supplied. The task-specific sources are recorded in `rtbench_tasks/catalog.py` and run artifacts.
 
 **Status:** the configurable batch runner supports all four harnesses. Native GaP graph/replay execution, its stateless Responses model adapter and its SE3 0.0.1 bridge are implemented, alongside upstream CaP-X, ASPIRE and ENPIRE evaluation adapters. Offline tests cover integration behavior. Physical execution requires calibrated station drivers and native task/environment implementations; these and the full policy-development workflows remain to be validated. Replay success is not robot success or a model benchmark result.
 

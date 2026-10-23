@@ -1,0 +1,10 @@
+{
+  "budget_usd": 230,
+  "prior_reservations_usd": 0.5,
+  "plan_maximum_additional_reservations_usd": 228.8,
+  "maximum_total_reservations_usd": 229.3,
+  "remaining_after_maximum_usd": 0.7,
+  "episodes": 44,
+  "decisions_per_episode": 52,
+  "provider_billing_estimate": false
+}

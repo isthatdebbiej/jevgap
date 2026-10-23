@@ -1,0 +1,9 @@
+{
+  "upstream_revision": "53e9966d7a8e2fa7494676772bccc35280f5c0ed",
+  "adaptation": "Skip unrelated simulator registrations only when CAPX_EXTERNAL_ENV_ONLY=1",
+  "files": {
+    "capx/envs/__init__.py": "976f6bf2a8b81d78b83f42b63fea75bee8d06a5f0c7bac8bcfcafb64be136061",
+    "capx/integrations/__init__.py": "008f007757a829a1e7f960e92eadaf08fed9159d363bcde35c7ded249fe5b951",
+    "capx/envs/tasks/__init__.py": "45166afca55810ec81f40c434a1f582339d79044206717cf295815ba28fcdffd"
+  }
+}

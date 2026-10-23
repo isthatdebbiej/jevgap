@@ -20,9 +20,18 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 def validate_config(config):
     allowed = {"provider", "model_id", "key_file", "budget_ledger", "budget_usd", "reservation_usd",
-               "max_output_tokens", "max_input_bytes", "timeout_s", "reasoning_effort", "accepted_response_models"}
+               "max_output_tokens", "max_input_bytes", "timeout_s", "reasoning_effort", "accepted_response_models",
+               "enable_thinking", "max_decisions"}
     if not isinstance(config, dict) or set(config) - allowed:
         raise ValueError("unknown model fields; credentials must be supplied by key_file")
+    provider = config.get("provider", "openai-responses")
+    if type(config.get('max_decisions',64)) is not int or not 1<=config.get('max_decisions',64)<=64:
+        raise ValueError('max_decisions must be an integer from 1 to 64')
+    if provider not in {"openai-responses", "costplusiq"}:
+        raise ValueError("model.provider must be openai-responses or costplusiq")
+    if "enable_thinking" in config:
+        if provider != "costplusiq" or type(config["enable_thinking"]) is not bool:
+            raise ValueError("enable_thinking must be a boolean for costplusiq")
     required = ("model_id", "key_file", "budget_ledger", "budget_usd", "reservation_usd")
     if any(not config.get(k) for k in required):
         raise ValueError("model requires model_id, key_file, budget_ledger, budget_usd and reservation_usd")
@@ -41,11 +50,32 @@ def validate_config(config):
         if type(n) is not int or not 1 <= n <= 100000:
             raise ValueError(f"invalid {key}")
     positive(config.get("timeout_s", 60), "model.timeout_s")
+    if provider == "costplusiq":
+        if config.get("max_output_tokens", 2048) > 32768:
+            raise ValueError("CostPlusIQ max_output_tokens cannot exceed 32768")
+        if config.get("reasoning_effort") not in (None, "none", "minimal", "low", "medium", "high", "xhigh", "max"):
+            raise ValueError("invalid CostPlusIQ reasoning_effort")
+        if config["model_id"] in {"Qwen/Qwen3.8-27B", "nvidia/Qwen3.8-Flash-Next-NVFP4"}:
+            if config.get("reasoning_effort") not in (None, "low", "medium", "high", "xhigh"):
+                raise ValueError("Qwen reasoning_effort must be low, medium, high or xhigh")
+
+
+def make_policy(config, *, live=False, transport=None):
+    validate_config(config)
+    if config.get("provider", "openai-responses") == "costplusiq":
+        from .costplusiq import CostPlusIQPolicy
+        return CostPlusIQPolicy(config, live=live, transport=transport)
+    return ResponsesPolicy(config, live=live, transport=transport)
 
 
 class ResponsesPolicy:
+    provider = "openai-responses"
+    endpoint = ENDPOINT
+
     def __init__(self, config, *, live=False, transport=None):
         validate_config(config)
+        if config.get("provider", "openai-responses") != self.provider:
+            raise ValueError("provider does not match adapter; use make_policy")
         if not live and transport is None:
             raise ValueError("model requests require --live")
         self.config = dict(config)
@@ -72,7 +102,7 @@ class ResponsesPolicy:
         key = Path(self.config["key_file"]).read_text(encoding="utf-8-sig").strip()
         if not key or any(c.isspace() for c in key):
             raise ValueError("invalid credential file")
-        request = urllib.request.Request(ENDPOINT, data=json.dumps(payload, allow_nan=False).encode(),
+        request = urllib.request.Request(self.endpoint, data=json.dumps(payload, allow_nan=False).encode(),
                                          headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"})
         with urllib.request.build_opener(NoRedirect).open(request, timeout=self.config.get("timeout_s", 60)) as response:
             raw = response.read(1024 * 1024 + 1)
@@ -80,7 +110,7 @@ class ResponsesPolicy:
             raise ValueError("oversized response")
         return json.loads(raw)
 
-    def decide(self, request):
+    def _build_payload(self, request):
         text = json.dumps(request, allow_nan=False)
         if len(text.encode()) > self.config.get("max_input_bytes", 64000):
             raise ValueError("policy input exceeds configured byte limit")
@@ -95,27 +125,35 @@ class ResponsesPolicy:
                    "text": {"format": {"type": "json_schema", "name": "robot_action_memory", "strict": True, "schema": schema}}}
         if self.config.get("reasoning_effort"):
             payload["reasoning"] = {"effort": self.config["reasoning_effort"]}
+        return payload
+
+    def _parse_result(self, result):
+        accepted = self.config.get("accepted_response_models", [self.model_id])
+        if result.get("model") not in accepted or result.get("status") != "completed":
+            raise ValueError("unexpected model or incomplete response")
+        parts = [part for item in result.get("output", []) if item.get("type") == "message" for part in item.get("content", [])]
+        if any(part.get("type") == "refusal" for part in parts):
+            raise ValueError("model refused the request")
+        return json.loads("".join(p["text"] for p in parts if p.get("type") == "output_text")), result.get("usage", {})
+
+    def decide(self, request):
+        payload = self._build_payload(request)
         call_id = self._reserve()
         start = time.monotonic_ns()
         try:
             result = self._transport(payload)
-            accepted = self.config.get("accepted_response_models", [self.model_id])
-            if result.get("model") not in accepted or result.get("status") != "completed":
-                raise ValueError("unexpected model or incomplete response")
-            parts = [part for item in result.get("output", []) if item.get("type") == "message" for part in item.get("content", [])]
-            if any(part.get("type") == "refusal" for part in parts):
-                raise ValueError("model refused the request")
-            response = json.loads("".join(p["text"] for p in parts if p.get("type") == "output_text"))
+            response, usage = self._parse_result(result)
             if not isinstance(response, dict) or set(response) != {"action", "memory"}:
                 raise ValueError("invalid action-memory response")
             if not isinstance(response["memory"], str) or not isinstance(response["action"], dict) or set(response["action"]) != set(FIELDS):
                 raise ValueError("invalid action-memory fields")
             if any(not isinstance(v, str) for v in response["action"].values()):
                 raise ValueError("action fields must be strings")
-            usage = result.get("usage", {})
+            if response["action"]["skill"] not in request["skills"]:
+                raise ValueError("model returned an unsupported skill")
             if any(type(usage.get(k)) is not int or usage[k] < 0 for k in ("input_tokens", "output_tokens")):
                 raise ValueError("invalid token usage")
-            if usage["output_tokens"] > payload["max_output_tokens"]:
+            if usage["output_tokens"] > self.config.get("max_output_tokens", 2048):
                 raise ValueError("output token limit exceeded")
             record = {"call_id": call_id, "response_model": result["model"], "usage": usage,
                       "latency_ns": time.monotonic_ns() - start, "reserved_usd": self.config["reservation_usd"]}

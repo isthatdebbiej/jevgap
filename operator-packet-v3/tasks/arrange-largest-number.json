@@ -1,0 +1,64 @@
+{
+  "name": "arrange-largest-number",
+  "instruction": "Arrange the four digit tiles 2, 4, 7, 9 on the four pads from left to right as the largest possible number, upright. Return both arms to origin.",
+  "reset_instruction": "Four tiles 2,4,7,9 and four ordered pads. Target 9742; start all tiles off pads; freeze upright yaw reference. Record matched initial layout and neutral poses for both arms. Confirm ACT start pose, all three camera views, open empty grippers and station stop control. Reset to the identical scene between policies. Not in the ten-task Notion proposal; four-digit variant fixed. Quality is a declared local adaptation.",
+  "success_question": "4 tiles in correct descending-order pads and upright, released. All four form 9742 and arms at origin. Every qualifying object must be released, settled for 2 seconds and unsupported by a gripper. Full success also requires both arms at the recorded origin.",
+  "rubric": {
+    "version": "se3-interval-v1",
+    "source": "https://robodojo-benchmark.com/doc/sim-tasks/arrange-largest-number/",
+    "variant": "local-supplemental",
+    "comparable_to_robodojo": false,
+    "milestones": [
+      {
+        "points": 0,
+        "criterion": "No qualifying milestone reached."
+      },
+      {
+        "points": 5,
+        "criterion": "1 tiles in correct descending-order pads and upright, released."
+      },
+      {
+        "points": 15,
+        "criterion": "2 tiles in correct descending-order pads and upright, released."
+      },
+      {
+        "points": 30,
+        "criterion": "3 tiles in correct descending-order pads and upright, released."
+      },
+      {
+        "points": 100,
+        "criterion": "4 tiles in correct descending-order pads and upright, released. All four form 9742 and arms at origin."
+      }
+    ],
+    "intervals": [
+      {
+        "phases": [
+          "Did it select and retain the correct digit for placement 1?",
+          "Did it transport the digit above its correct pad with upright orientation?",
+          "Did it release the correct digit on its pad with valid orientation? Preserve earlier qualifying units."
+        ]
+      },
+      {
+        "phases": [
+          "Did it select and retain the correct digit for placement 2?",
+          "Did it transport the digit above its correct pad with upright orientation?",
+          "Did it release the correct digit on its pad with valid orientation? Preserve earlier qualifying units."
+        ]
+      },
+      {
+        "phases": [
+          "Did it select and retain the correct digit for placement 3?",
+          "Did it transport the digit above its correct pad with upright orientation?",
+          "Did it release the correct digit on its pad with valid orientation? Preserve earlier qualifying units."
+        ]
+      },
+      {
+        "phases": [
+          "Did it select and retain the correct digit for placement 4?",
+          "Did it transport the digit above its correct pad with upright orientation?",
+          "Did it release the correct digit on its pad with valid orientation? Verify all completed units and return both arms to origin."
+        ]
+      }
+    ]
+  }
+}

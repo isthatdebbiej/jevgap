@@ -1,0 +1,42 @@
+{
+  "name": "hang-mugs",
+  "instruction": "Hang both mugs by their handles on separate pegs of the wooden mug tree. Return both arms to origin.",
+  "reset_instruction": "Two ceramic mugs and upright wooden mug tree. Start mugs on table; base/table support does not count as hanging. Record matched initial layout and neutral poses for both arms. Confirm ACT start pose, all three camera views, open empty grippers and station stop control. Reset to the identical scene between policies. Quality uses adapted intervals 0->40->100 with the same 30/30/40 phase rule; not the three-mug rubric.",
+  "success_question": "Both mugs securely hung on separate pegs, rack upright and arms at origin. Every qualifying object must be released, settled for 2 seconds and unsupported by a gripper. Full success also requires both arms at the recorded origin.",
+  "rubric": {
+    "version": "se3-interval-v1",
+    "source": "https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380",
+    "variant": "se3-adapted-two-mugs",
+    "comparable_to_robodojo": false,
+    "milestones": [
+      {
+        "points": 0,
+        "criterion": "No qualifying milestone reached."
+      },
+      {
+        "points": 40,
+        "criterion": "One mug securely hung, gripper open and rack upright."
+      },
+      {
+        "points": 100,
+        "criterion": "Both mugs securely hung on separate pegs, rack upright and arms at origin."
+      }
+    ],
+    "intervals": [
+      {
+        "phases": [
+          "Did it grasp and retain mug 1 without tipping or dropping it?",
+          "Did it carry mug 1 and align its handle with a different free peg?",
+          "Did it hang and release mug 1, withdraw and leave the rack upright? Preserve earlier qualifying units."
+        ]
+      },
+      {
+        "phases": [
+          "Did it grasp and retain mug 2 without tipping or dropping it?",
+          "Did it carry mug 2 and align its handle with a different free peg?",
+          "Did it hang and release mug 2, withdraw and leave the rack upright? Verify all completed units and return both arms to origin."
+        ]
+      }
+    ]
+  }
+}

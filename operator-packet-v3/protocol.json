@@ -1,0 +1,41 @@
+{
+  "version": "se3-physical-protocol-v1",
+  "max_rollout_s": 450,
+  "max_model_decisions": 52,
+  "thresholds": {
+    "placement_center_mm": 10,
+    "placement_yaw_deg": 10,
+    "stable_s": 2,
+    "alignment_perpendicular_center_error_mm": 10,
+    "alignment_pairwise_yaw_deg": 10,
+    "no_lift_bottom_clearance_mm": 2,
+    "insertion_reference_depth_error_mm": 1,
+    "origin_joint_error_deg": 3
+  },
+  "provenance": "Precision thresholds come from the local proposal; other numerical thresholds are explicit local operational choices, not claims about RoboDojo defaults.",
+  "measurement": "Fixed board coordinates measured with calibrated overhead views; side view verifies bottom clearance and insertion depth. Use shortest absolute yaw difference. Fit the alignment line through the first and last ordered centers; score the middle perpendicular error. Both origin poses compared joint-by-joint with saved neutral telemetry.",
+  "resolution_requirement": "Before scored collection demonstrate <=2 mm planar, <=2 degree yaw and <=0.5 mm depth/height measurement uncertainty; otherwise revise the protocol version before any matched pair, never between methods.",
+  "container": "Entire object footprint inside the container below its rim, settled and unsupported. No partial inclusion credit toward a completed unit.",
+  "fixture": "Observer-requested relocation after final decision observation, controller hold, physically clear arms, locked carrier, fresh frames, new model decision. Only this prescribed intervention is excluded from assistance.",
+  "evidence": "Save initial/terminal images, continuous synchronized top/side video for sequence/no-lift/press evidence, ACT telemetry, full model inputs/outputs and independent scores. If evidence cannot establish a criterion, mark scoring invalid rather than inventing success.",
+  "task_sha256": {
+    "align-blocks": "f617776fdc52439c81bb0c43dfba666019d523d4737261da9c0d3201a442750e",
+    "arrange-largest-number": "643995bfc87349b9d6d17670bdd279d22827698a71c6162aeb07b04cc72e7633",
+    "classify-objects-by-language": "a1cd3b98d7012cff9501736eb4bc439aa897a040ea7b5953a61e7363bb3a9eb1",
+    "classify-objects": "c10a8bc8e9eb224a9cfc5bd53f228247ba4c6381e5c4f1aa2275869c6eaef0e0",
+    "cover-blocks": "ed08543c8ff75a6ffcf8b37392c695b08cd6dcfd16e4e9243f95c2942f2efaac",
+    "hang-mugs": "26f3b6d9e6a930f162ea6adfa939856c7aae0a3780c5f2212d25b2c3fd8ac4df",
+    "insert-tubes": "5baa187006440eecfa9f87e8f61603b4ac9e792d53d39ebf645543955ae4ff0f",
+    "pack-objects-into-box": "218b42d278db9345f433ff766e24d57ed06f556c6653cd58144fa0b201d30353",
+    "play-stacking-toy": "ce40ae3d3c0ba482ec363cd215ccec4c917924f9f14e5603295db0046825e4f9",
+    "plug-in-charger": "caa5e0216f59bc0c957ddcaba45e8b0f449fd84f5e5530d5ad9176d343a2e698",
+    "precision-memory-correction": "52b5b327b561865ab59b9a33a118a8b5ab5be544e71a21ba3cf97e9fc84a21f3",
+    "precision-memory-delayed": "54165864a666de028dc8e3fafdca3c1982fb0097e94b3def0a637f18c548e8cd",
+    "precision-memory-different-history": "aaf8e37b9c6725b08bc3419ea2d1894eb6bfd4f2271e7282c3b50515dec85a83",
+    "precision-memory-moving-cube": "e0f080a32b2ca2947dd80ad55b26be72e65fc06a9005c588e445f98bc1589560",
+    "press-by-number": "393a2af363c0d01a1fa3f4cf95e135a7c7534f7bb69da2973871fd9cd45adb91",
+    "stack-blocks": "906d1beb470288a19d1791b2b498e784348684b4d9671f2dff933b6edbd91371",
+    "stack-bowls": "96f0a9950d9bbd1ec73d316d88c28ea73856ec5d3f213960a6a17f77b2e643d2"
+  },
+  "plan_sha256": "2ffc4db7cf036e5a096583b84b5e6d4f229a5dd496d1e3a1a050dd71a706305d"
+}

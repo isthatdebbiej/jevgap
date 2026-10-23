@@ -161,8 +161,8 @@ def preflight(experiment):
             blockers.append(f"station configuration unavailable ({type(exc).__name__})")
         blockers.extend(_scenario_blockers(e))
         model = e.model_config()
-        if model.get("provider") != "openai-responses":
-            blockers.append("SE3 runs currently require model.provider=openai-responses")
+        if model.get("provider") not in {"openai-responses", "costplusiq"}:
+            blockers.append("live runs require model.provider=openai-responses or costplusiq")
         else:
             from .responses import validate_config
             try:

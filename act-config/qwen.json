@@ -1,0 +1,14 @@
+{
+  "provider": "costplusiq",
+  "model_id": "Qwen/Qwen3.8-27B",
+  "key_file": "/mnt/c/Users/dshek/Work/Robotics/openmodels.txt",
+  "budget_ledger": "/mnt/c/Users/dshek/OneDrive/Documents/ChatGPT/GaP/act-budget.sqlite",
+  "budget_usd": 230,
+  "reservation_usd": 0.1,
+  "max_input_bytes": 100000,
+  "max_output_tokens": 2048,
+  "timeout_s": 60,
+  "reasoning_effort": "low",
+  "enable_thinking": false,
+  "max_decisions": 52
+}

@@ -37,6 +37,8 @@ def initialize(directory, gap_root):
                      "budget_usd": 0, "reservation_usd": 0, "max_input_bytes": 64000,
                      "max_output_tokens": 2048, "timeout_s": 60, "reasoning_effort": "low"}
     write_json(root / "se3.local.json", live)
+    from .model_profiles import add_openmodel_profiles
+    add_openmodel_profiles(root, live)
     write_json(root / "station.local.json", {
         "station_id": "", "address": "", "calibration_id": "", "start_pose": {},
         "driver_factory": "", "driver_config": "driver.local.json", "validated_tasks": [],
@@ -115,7 +117,7 @@ def _run_se3(experiment, task, seed, repetition, graph, folder):
     from google.protobuf.json_format import MessageToDict
     from se3labs.interface.eval.job import JobRequest
     from se3labs.sdk import eval_client
-    from .responses import ResponsesPolicy
+    from .responses import make_policy
     from .se3 import GraphPolicy, load_driver, task_spec
     e = experiment
     scenario, station = e.scenario(task, seed, repetition), e.station_config()
@@ -125,7 +127,7 @@ def _run_se3(experiment, task, seed, repetition, graph, folder):
         needed = set(TASKS[task].skills) | {"home"}
         if not needed.issubset(driver.capabilities):
             raise ValueError("station driver lacks task skills")
-        model = ResponsesPolicy(e.model_config(), live=True)
+        model = make_policy(e.model_config(), live=True)
         policy = GraphPolicy(scenario, model, driver, station, graph, folder, e.limits)
         request = JobRequest(task=task_spec(scenario, station, e.limits["episode_timeout_s"]), policy=policy, episodes=1)
         session = eval_client.serve_policy(station["station_id"], station["address"], request)

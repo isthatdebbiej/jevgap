@@ -1,0 +1,31 @@
+{
+  "name": "align-blocks",
+  "instruction": "Without picking up any cube, use the metal ruler to push the three purple cubes into one straight aligned row. Return both arms to origin.",
+  "reset_instruction": "Three purple cubes and metal ruler. Fix top/side camera geometry, ruler parking position and initial cube poses. Record calibrated collinearity, yaw and no-lift measurements over the entire trajectory. Record matched initial layout and neutral poses for both arms. Confirm ACT start pose, all three camera views, open empty grippers and station stop control. Reset to the identical scene between policies. ",
+  "success_question": "Cube centers collinear within frozen tolerance, faces parallel within yaw tolerance, no-lift limit respected throughout, ruler used, arms at origin. Every qualifying object must be released, settled for 2 seconds and unsupported by a gripper. Full success also requires both arms at the recorded origin.",
+  "rubric": {
+    "version": "se3-interval-v1",
+    "source": "https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380",
+    "variant": "se3-physical",
+    "comparable_to_robodojo": false,
+    "milestones": [
+      {
+        "points": 0,
+        "criterion": "No qualifying milestone reached."
+      },
+      {
+        "points": 100,
+        "criterion": "Cube centers collinear within frozen tolerance, faces parallel within yaw tolerance, no-lift limit respected throughout, ruler used, arms at origin."
+      }
+    ],
+    "intervals": [
+      {
+        "phases": [
+          "Did it grasp and position the ruler edge for pushing without lifting cubes?",
+          "Did it push all cubes toward a common line with the ruler while respecting the no-lift limit?",
+          "Did it meet collinearity/yaw tolerances, withdraw without disturbance and return arms to origin?"
+        ]
+      }
+    ]
+  }
+}

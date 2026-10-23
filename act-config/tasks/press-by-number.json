@@ -1,0 +1,31 @@
+{
+  "name": "press-by-number",
+  "instruction": "Press left green count button nine times, right dark-blue confirm once, middle cyan count button once, then right dark-blue confirm once again. No extra, missing or out-of-order presses. Return both arms to origin.",
+  "reset_instruction": "Cards 9 and 1 over left green and middle cyan buttons; right dark-blue confirm. Record each activation with switch signal or clear full press/release video. Record matched initial layout and neutral poses for both arms. Confirm ACT start pose, all three camera views, open empty grippers and station stop control. Reset to the identical scene between policies. ",
+  "success_question": "Exact left x9 / confirm / middle x1 / confirm sequence without extra/missed/premature presses, arms at origin. Every qualifying object must be released, settled for 2 seconds and unsupported by a gripper. Full success also requires both arms at the recorded origin.",
+  "rubric": {
+    "version": "se3-interval-v1",
+    "source": "https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380",
+    "variant": "se3-physical",
+    "comparable_to_robodojo": false,
+    "milestones": [
+      {
+        "points": 0,
+        "criterion": "No qualifying milestone reached."
+      },
+      {
+        "points": 100,
+        "criterion": "Exact left x9 / confirm / middle x1 / confirm sequence without extra/missed/premature presses, arms at origin."
+      }
+    ],
+    "intervals": [
+      {
+        "phases": [
+          "Did it bind card 9 to left, card 1 to middle and plan two confirmations?",
+          "Did it execute left x9, right confirm, middle x1, right confirm in that order?",
+          "Were all counts exact without extra/missed/out-of-order presses, then both arms returned to origin?"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "plug-in-charger",
+  "instruction": "Insert the white USB adapter fully and upright into the marked outlet of the disconnected power strip. Return both arms to origin.",
+  "reset_instruction": "White USB wall adapter and disconnected de-energized power strip; mark one outlet, trace allowed strip footprint, route cord clear. Record reference flush seating before rollout. Record matched initial layout and neutral poses for both arms. Confirm ACT start pose, all three camera views, open empty grippers and station stop control. Reset to the identical scene between policies. ",
+  "success_question": "Adapter flush in marked outlet, no prong exposure beyond normal reference fit, upright, strip in bounds, gripper released and arms at origin. Every qualifying object must be released, settled for 2 seconds and unsupported by a gripper. Full success also requires both arms at the recorded origin.",
+  "rubric": {
+    "version": "se3-interval-v1",
+    "source": "https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380",
+    "variant": "se3-physical",
+    "comparable_to_robodojo": false,
+    "milestones": [
+      {
+        "points": 0,
+        "criterion": "No qualifying milestone reached."
+      },
+      {
+        "points": 100,
+        "criterion": "Adapter flush in marked outlet, no prong exposure beyond normal reference fit, upright, strip in bounds, gripper released and arms at origin."
+      }
+    ],
+    "intervals": [
+      {
+        "phases": [
+          "Did it grasp and retain adapter without unsafe prong contact?",
+          "Did it transport to marked outlet and align both prongs for insertion?",
+          "Did it fully seat and release adapter, leave strip in bounds and return both arms to origin?"
+        ]
+      }
+    ]
+  }
+}

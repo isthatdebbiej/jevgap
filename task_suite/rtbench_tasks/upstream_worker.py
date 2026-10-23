@@ -7,8 +7,45 @@ import importlib
 import json
 import subprocess
 import sys
+import math
+import signal
+import time
+from contextlib import contextmanager, nullcontext
 from dataclasses import asdict
 from pathlib import Path
+
+
+@contextmanager
+def cap_deadline(seconds):
+    """Keep the native trial's alarm reset from extending a physical trial.
+
+    CaP-X re-arms a hardcoded 1000-second alarm after environment reset.
+    Preserve cancellation, but never extend the first armed deadline.
+    The station's Task_Spec remains the authoritative rollout timer.
+    """
+    original = getattr(signal, "alarm", None)
+    if original is None:
+        raise RuntimeError("native CaP-X physical trials require Linux/WSL")
+    deadline = None
+
+    def bounded_alarm(requested):
+        nonlocal deadline
+        if requested == 0:
+            return original(0)
+        now = time.monotonic()
+        if deadline is None:
+            deadline = now + seconds
+        remaining = deadline - now
+        if remaining <= 0:
+            raise TimeoutError("native trial deadline expired")
+        return original(min(requested, max(1, math.ceil(remaining))))
+
+    signal.alarm = bounded_alarm
+    try:
+        yield
+    finally:
+        original(0)
+        signal.alarm = original
 
 
 def read(path):
@@ -61,12 +98,23 @@ def cap(request, binding, binding_path, output):
     from capx.envs import launch, runner
     captured = []
     original = runner._print_and_save_summary
+    import os
+    act = os.environ.get("JEVGAP_ACT_LIVE") == "1"
+    physical = act or request.get("evaluation_backend") == "se3"
+    original_retries = getattr(runner, "MAX_TRIAL_RETRIES", None)
+    original_timeout = getattr(runner, "TRIAL_TIMEOUT_SECONDS", None)
+    if physical:
+        if original_retries is None:
+            raise ValueError("cannot disable retries in this CaP-X revision")
+        runner.MAX_TRIAL_RETRIES = 1
+        runner.TRIAL_TIMEOUT_SECONDS = max(1, int(request["limits"]["episode_timeout_s"]))
 
     def record(summaries, args, config, start_time):
         captured.extend(summaries)
         return original(summaries, args, config, start_time)
 
     runner._print_and_save_summary = record
+    model_client = None
     argv = ["--config-path", resolved(binding_path, binding["config_file"]),
             *binding.get("args", []), "--total-trials", "1", "--num-workers", "1",
             "--output-dir", (output / "native").as_posix()]
@@ -74,9 +122,36 @@ def cap(request, binding, binding_path, output):
         args = tyro.cli(launch.LaunchArgs, args=argv)
         # Override YAML too: the native web UI is an interactive, unbounded loop.
         args.web_ui = False
-        launch.main(args)
+        model_context = nullcontext()
+        if request.get("model_config_file"):
+            sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+            from rtbench_tasks.cap_costplusiq import NativeClient, native_transport
+            config_path = Path(request["model_config_file"])
+            config = read(config_path)
+            for key in ("key_file", "budget_ledger"):
+                config[key] = resolved(config_path, config[key])
+            model_client = NativeClient(config, live=True)
+            args.model = model_client.model_id
+            args.server_url = model_client.endpoint
+            args.api_key = None
+            args.max_tokens = config.get("max_output_tokens", 2048)
+            args.reasoning_effort = config.get("reasoning_effort", "low")
+            args.use_parallel_ensemble = args.use_multimodel = False
+            model_context = native_transport(model_client)
+        with (cap_deadline(runner.TRIAL_TIMEOUT_SECONDS) if physical else nullcontext()), model_context:
+            launch.main(args)
     finally:
         runner._print_and_save_summary = original
+        if physical:
+            runner.MAX_TRIAL_RETRIES = original_retries
+            runner.TRIAL_TIMEOUT_SECONDS = original_timeout
+        if act:
+            module = sys.modules.get("rtbench_tasks.cap_act")
+            if module is None:
+                raise ValueError("CaP config did not instantiate the shared ACT environment")
+            module.finalize_active()
+        if model_client is not None:
+            write(output / "model-calls.json", model_client.calls)
     if len(captured) != 1:
         raise ValueError("CaP-X must return exactly one native trial summary")
     result = captured[0]

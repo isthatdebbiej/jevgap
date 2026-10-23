@@ -1,0 +1,19 @@
+{
+  "protocol_sha256": "47c9a6979c3ba08967f87f39005f7a942a606c7a9a312b3c022e4ce80514e315",
+  "station": "se3-labs-yam-2",
+  "address": "100.107.161.92:7443",
+  "operator": "",
+  "calibration_id": "",
+  "evidence_directory": "",
+  "verified": {
+    "start_pose": false,
+    "reachable_workspace": false,
+    "stop_control": false,
+    "three_camera_labels_readable": false,
+    "continuous_video": false,
+    "measurement_resolution": false,
+    "reset_layouts": false,
+    "fixture_hold_clear_lock": false,
+    "model_budget_for_selected_pairs": false
+  }
+}

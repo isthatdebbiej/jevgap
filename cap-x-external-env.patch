@@ -1,0 +1,627 @@
+diff --git a/capx/envs/__init__.py b/capx/envs/__init__.py
+index 45c477d..71da04e 100644
+--- a/capx/envs/__init__.py
++++ b/capx/envs/__init__.py
+@@ -1,3 +1,7 @@
+ # Re-export from capx.envs.base and capx.envs.simulators
+ from .base import BaseEnv, get_env, list_envs, register_env
+-from . import simulators  # noqa: F401 -- triggers env registrations
++
++# SE3 supplies its own environment; avoid importing unrelated Franka stacks.
++import os as _os
++if _os.environ.get("CAPX_EXTERNAL_ENV_ONLY") != "1":
++    from . import simulators  # noqa: F401 -- triggers env registrations
+diff --git a/capx/envs/tasks/__init__.py b/capx/envs/tasks/__init__.py
+index ed40dad..b6e41b2 100644
+--- a/capx/envs/tasks/__init__.py
++++ b/capx/envs/tasks/__init__.py
+@@ -8,180 +8,184 @@ from .base import (
+     register_config,
+     register_exec_env,
+ )
+-from .franka.franka_cube_restack import FrankaRestackCodeEnv
+-from .franka.franka_lift import FrankaLiftCodeEnv
+-from .franka.franka_nut_assembly import FrankaNutAssemblyCodeEnv
+-from .franka.franka_pick_place import FrankaPickPlaceCodeEnv
+-from .franka.franka_spill_wipe import FrankaSpillWipeCodeEnv
+-from .franka.two_arm_handover import TwoArmHandoverCodeEnv
+-from .franka.two_arm_lift import TwoArmLiftCodeEnv
+ 
+-register_exec_env("franka_real_code_env", FrankaPickPlaceCodeEnv)
+-register_config(
+-    "franka_real_code_env",
+-    CodeExecEnvConfig(
+-        low_level="franka_real_low_level",
+-        apis=["FrankaControlApi"],
+-    ),
+-)
+-register_exec_env("franka_robosuite_spill_wipe_code_env", FrankaSpillWipeCodeEnv)
+-register_config(
+-    "franka_robosuite_spill_wipe_code_env",
+-    CodeExecEnvConfig(
+-        low_level="franka_robosuite_spill_wipe_low_level",
+-        apis=["FrankaControlSpillWipePrivilegedApi"],
+-    ),
+-)
++# SE3 supplies its own environment; avoid importing unrelated Franka stacks.
++import os as _os
++if _os.environ.get("CAPX_EXTERNAL_ENV_ONLY") != "1":
++    from .franka.franka_cube_restack import FrankaRestackCodeEnv
++    from .franka.franka_lift import FrankaLiftCodeEnv
++    from .franka.franka_nut_assembly import FrankaNutAssemblyCodeEnv
++    from .franka.franka_pick_place import FrankaPickPlaceCodeEnv
++    from .franka.franka_spill_wipe import FrankaSpillWipeCodeEnv
++    from .franka.two_arm_handover import TwoArmHandoverCodeEnv
++    from .franka.two_arm_lift import TwoArmLiftCodeEnv
+ 
+-register_exec_env("franka_pick_place_code_env", FrankaPickPlaceCodeEnv)
+-register_config(
+-    "franka_pick_place_code_env",
+-    CodeExecEnvConfig(
+-        low_level="franka_cubes_low_level",
+-        apis=["FrankaControlPrivilegedApi"],
+-    ),
+-)
+-register_exec_env("franka_robosuite_pick_place_code_env", FrankaPickPlaceCodeEnv)
+-register_config(
+-    "franka_robosuite_pick_place_code_env",
+-    CodeExecEnvConfig(
+-        low_level="franka_robosuite_cubes_low_level",
+-        apis=["FrankaControlPrivilegedApi"],
+-    ),
+-)
+-register_exec_env("franka_nut_assembly_code_env", FrankaNutAssemblyCodeEnv)
+-register_config(
+-    "franka_nut_assembly_code_env",
+-    CodeExecEnvConfig(
+-        low_level="franka_robosuite_nut_assembly_low_level",
+-        apis=["FrankaControlNutAssemblyPrivilegedApi"],
+-        privileged=True,
+-    ),
+-)
++    register_exec_env("franka_real_code_env", FrankaPickPlaceCodeEnv)
++    register_config(
++        "franka_real_code_env",
++        CodeExecEnvConfig(
++            low_level="franka_real_low_level",
++            apis=["FrankaControlApi"],
++        ),
++    )
++    register_exec_env("franka_robosuite_spill_wipe_code_env", FrankaSpillWipeCodeEnv)
++    register_config(
++        "franka_robosuite_spill_wipe_code_env",
++        CodeExecEnvConfig(
++            low_level="franka_robosuite_spill_wipe_low_level",
++            apis=["FrankaControlSpillWipePrivilegedApi"],
++        ),
++    )
+ 
+-register_exec_env("franka_nut_assembly_code_env_visual", FrankaNutAssemblyCodeEnv)
+-register_config(
+-    "franka_nut_assembly_code_env_visual",
+-    CodeExecEnvConfig(
+-        low_level="franka_robosuite_nut_assembly_low_level_visual",
+-        apis=["FrankaControlNutAssemblyVisualApi"],
+-        privileged=False,
+-    ),
+-)
+-register_exec_env("franka_pick_place_multi_code_env", FrankaPickPlaceCodeEnv)
+-register_config(
+-    "franka_pick_place_multi_code_env",
+-    CodeExecEnvConfig(
+-        low_level="franka_cubes_low_level",
+-        apis=["FrankaControlMultiPrivilegedApi"],
+-    ),
+-)
++    register_exec_env("franka_pick_place_code_env", FrankaPickPlaceCodeEnv)
++    register_config(
++        "franka_pick_place_code_env",
++        CodeExecEnvConfig(
++            low_level="franka_cubes_low_level",
++            apis=["FrankaControlPrivilegedApi"],
++        ),
++    )
++    register_exec_env("franka_robosuite_pick_place_code_env", FrankaPickPlaceCodeEnv)
++    register_config(
++        "franka_robosuite_pick_place_code_env",
++        CodeExecEnvConfig(
++            low_level="franka_robosuite_cubes_low_level",
++            apis=["FrankaControlPrivilegedApi"],
++        ),
++    )
++    register_exec_env("franka_nut_assembly_code_env", FrankaNutAssemblyCodeEnv)
++    register_config(
++        "franka_nut_assembly_code_env",
++        CodeExecEnvConfig(
++            low_level="franka_robosuite_nut_assembly_low_level",
++            apis=["FrankaControlNutAssemblyPrivilegedApi"],
++            privileged=True,
++        ),
++    )
+ 
+-register_exec_env("franka_lift_code_env", FrankaLiftCodeEnv)
+-register_config(
+-    "franka_lift_code_env",
+-    CodeExecEnvConfig(
+-        low_level="franka_robosuite_cube_lift_low_level",
+-        apis=["FrankaControlPrivilegedApi"],
+-    ),
+-)
+-register_exec_env("two_arm_handover_code_env", TwoArmHandoverCodeEnv)
+-register_config(
+-    "two_arm_handover_code_env",
+-    CodeExecEnvConfig(
+-        low_level="two_arm_handover_robosuite",
+-        apis=["FrankaHandoverApi"],
+-    ),
+-)
++    register_exec_env("franka_nut_assembly_code_env_visual", FrankaNutAssemblyCodeEnv)
++    register_config(
++        "franka_nut_assembly_code_env_visual",
++        CodeExecEnvConfig(
++            low_level="franka_robosuite_nut_assembly_low_level_visual",
++            apis=["FrankaControlNutAssemblyVisualApi"],
++            privileged=False,
++        ),
++    )
++    register_exec_env("franka_pick_place_multi_code_env", FrankaPickPlaceCodeEnv)
++    register_config(
++        "franka_pick_place_multi_code_env",
++        CodeExecEnvConfig(
++            low_level="franka_cubes_low_level",
++            apis=["FrankaControlMultiPrivilegedApi"],
++        ),
++    )
+ 
+-# from .franka.franka_libero_pick_place import FrankaLiberoPickPlaceCodeEnv
+-# from .franka.franka_libero_open_microwave import FrankaLiberoOpenMicrowaveCodeEnv
+-# from .franka.franka_libero_pick_alphabet_soup import FrankaLiberoPickAlphabetSoupCodeEnv
+-from .franka.franka_libero_env import FrankaLiberoCodeEnv
+-register_exec_env("franka_libero_code_env", FrankaLiberoCodeEnv)
+-register_config(
+-    "franka_libero_code_env",
+-    CodeExecEnvConfig(
+-        low_level="franka_libero_low_level",
+-        apis=["FrankaLiberoApi"],
+-    ),
+-)
++    register_exec_env("franka_lift_code_env", FrankaLiftCodeEnv)
++    register_config(
++        "franka_lift_code_env",
++        CodeExecEnvConfig(
++            low_level="franka_robosuite_cube_lift_low_level",
++            apis=["FrankaControlPrivilegedApi"],
++        ),
++    )
++    register_exec_env("two_arm_handover_code_env", TwoArmHandoverCodeEnv)
++    register_config(
++        "two_arm_handover_code_env",
++        CodeExecEnvConfig(
++            low_level="two_arm_handover_robosuite",
++            apis=["FrankaHandoverApi"],
++        ),
++    )
+ 
+-# # Non-privileged (perception-based) Libero environments
+-# register_exec_env("franka_libero_pick_place_code_env", FrankaLiberoPickPlaceCodeEnv)
+-# register_config(
+-#     "franka_libero_pick_place_code_env",
+-#     CodeExecEnvConfig(
+-#         low_level="franka_libero_pick_place_low_level",
+-#         apis=["FrankaLiberoApi"],
+-#         privileged=False,
+-#     ),
+-# )
++    # from .franka.franka_libero_pick_place import FrankaLiberoPickPlaceCodeEnv
++    # from .franka.franka_libero_open_microwave import FrankaLiberoOpenMicrowaveCodeEnv
++    # from .franka.franka_libero_pick_alphabet_soup import FrankaLiberoPickAlphabetSoupCodeEnv
++    from .franka.franka_libero_env import FrankaLiberoCodeEnv
++    register_exec_env("franka_libero_code_env", FrankaLiberoCodeEnv)
++    register_config(
++        "franka_libero_code_env",
++        CodeExecEnvConfig(
++            low_level="franka_libero_low_level",
++            apis=["FrankaLiberoApi"],
++        ),
++    )
+ 
+-# register_exec_env("franka_libero_open_microwave_code_env", FrankaLiberoOpenMicrowaveCodeEnv)
+-# register_config(
+-#     "franka_libero_open_microwave_code_env",
+-#     CodeExecEnvConfig(
+-#         low_level="franka_libero_open_microwave_low_level",
+-#         apis=["FrankaLiberoApi"],
+-#         privileged=False,
+-#     ),
+-# )
++    # # Non-privileged (perception-based) Libero environments
++    # register_exec_env("franka_libero_pick_place_code_env", FrankaLiberoPickPlaceCodeEnv)
++    # register_config(
++    #     "franka_libero_pick_place_code_env",
++    #     CodeExecEnvConfig(
++    #         low_level="franka_libero_pick_place_low_level",
++    #         apis=["FrankaLiberoApi"],
++    #         privileged=False,
++    #     ),
++    # )
+ 
+-# register_exec_env("franka_libero_pick_alphabet_soup_code_env", FrankaLiberoPickAlphabetSoupCodeEnv)
+-# register_config(
+-#     "franka_libero_pick_alphabet_soup_code_env",
+-#     CodeExecEnvConfig(
+-#         low_level="franka_libero_pick_alphabet_soup_low_level",
+-#         apis=["FrankaLiberoApi"],
+-#         privileged=False,
+-#     ),
+-# )
++    # register_exec_env("franka_libero_open_microwave_code_env", FrankaLiberoOpenMicrowaveCodeEnv)
++    # register_config(
++    #     "franka_libero_open_microwave_code_env",
++    #     CodeExecEnvConfig(
++    #         low_level="franka_libero_open_microwave_low_level",
++    #         apis=["FrankaLiberoApi"],
++    #         privileged=False,
++    #     ),
++    # )
+ 
+-# # Privileged Libero environments
+-# register_exec_env("franka_libero_pick_place_code_env_privileged", FrankaLiberoPickPlaceCodeEnv)
+-# register_config(
+-#     "franka_libero_pick_place_code_env_privileged",
+-#     CodeExecEnvConfig(
+-#         low_level="franka_libero_pick_place_low_level",
+-#         apis=["FrankaLiberoPrivilegedApi"],
+-#         privileged=True,
+-#     ),
+-# )
++    # register_exec_env("franka_libero_pick_alphabet_soup_code_env", FrankaLiberoPickAlphabetSoupCodeEnv)
++    # register_config(
++    #     "franka_libero_pick_alphabet_soup_code_env",
++    #     CodeExecEnvConfig(
++    #         low_level="franka_libero_pick_alphabet_soup_low_level",
++    #         apis=["FrankaLiberoApi"],
++    #         privileged=False,
++    #     ),
++    # )
+ 
+-# register_exec_env("franka_libero_open_microwave_code_env_privileged", FrankaLiberoOpenMicrowaveCodeEnv)
+-# register_config(
+-#     "franka_libero_open_microwave_code_env_privileged",
+-#     CodeExecEnvConfig(
+-#         low_level="franka_libero_open_microwave_low_level",
+-#         apis=["FrankaLiberoPrivilegedApi"],
+-#         privileged=True,
+-#     ),
+-# )
+-register_exec_env("franka_restack_code_env", FrankaRestackCodeEnv)
+-register_config(
+-    "franka_restack_code_env",
+-    CodeExecEnvConfig(
+-        low_level="franka_robosuite_cubes_restack_low_level",
+-        apis=["FrankaControlPrivilegedApi"],
+-    ),
+-)
++    # # Privileged Libero environments
++    # register_exec_env("franka_libero_pick_place_code_env_privileged", FrankaLiberoPickPlaceCodeEnv)
++    # register_config(
++    #     "franka_libero_pick_place_code_env_privileged",
++    #     CodeExecEnvConfig(
++    #         low_level="franka_libero_pick_place_low_level",
++    #         apis=["FrankaLiberoPrivilegedApi"],
++    #         privileged=True,
++    #     ),
++    # )
+ 
+-from .r1pro.r1pro_pickup_radio import R1ProRadioCodeEnv
+-register_exec_env("r1pro_radio_code_env", R1ProRadioCodeEnv)
+-register_config(
+-    "r1pro_radio_code_env",
+-    CodeExecEnvConfig(
+-        low_level="r1pro_b1k_low_level",
+-        apis=["R1ProControlApi"],
+-    ),
+-)
+-from .r1pro.r1pro_pickup_trash import R1ProTrashCodeEnv
+-register_exec_env("r1pro_trash_code_env", R1ProTrashCodeEnv)
+-register_config(
+-    "r1pro_trash_code_env",
+-    CodeExecEnvConfig(
+-        low_level="r1pro_b1k_low_level",
+-        apis=["R1ProControlApi"],
+-    ),
+-)
++    # register_exec_env("franka_libero_open_microwave_code_env_privileged", FrankaLiberoOpenMicrowaveCodeEnv)
++    # register_config(
++    #     "franka_libero_open_microwave_code_env_privileged",
++    #     CodeExecEnvConfig(
++    #         low_level="franka_libero_open_microwave_low_level",
++    #         apis=["FrankaLiberoPrivilegedApi"],
++    #         privileged=True,
++    #     ),
++    # )
++    register_exec_env("franka_restack_code_env", FrankaRestackCodeEnv)
++    register_config(
++        "franka_restack_code_env",
++        CodeExecEnvConfig(
++            low_level="franka_robosuite_cubes_restack_low_level",
++            apis=["FrankaControlPrivilegedApi"],
++        ),
++    )
++
++    from .r1pro.r1pro_pickup_radio import R1ProRadioCodeEnv
++    register_exec_env("r1pro_radio_code_env", R1ProRadioCodeEnv)
++    register_config(
++        "r1pro_radio_code_env",
++        CodeExecEnvConfig(
++            low_level="r1pro_b1k_low_level",
++            apis=["R1ProControlApi"],
++        ),
++    )
++    from .r1pro.r1pro_pickup_trash import R1ProTrashCodeEnv
++    register_exec_env("r1pro_trash_code_env", R1ProTrashCodeEnv)
++    register_config(
++        "r1pro_trash_code_env",
++        CodeExecEnvConfig(
++            low_level="r1pro_b1k_low_level",
++            apis=["R1ProControlApi"],
++        ),
++    )
+diff --git a/capx/integrations/__init__.py b/capx/integrations/__init__.py
+index 7aff0bf..a2db49f 100644
+--- a/capx/integrations/__init__.py
++++ b/capx/integrations/__init__.py
+@@ -1,129 +1,133 @@
+ from .base_api import list_apis, register_api
+-from .franka.control import FrankaControlApi
+-from .franka.control_privileged import FrankaControlPrivilegedApi
+-from .franka.control_reduced import FrankaControlApiReduced
+-from .franka.control_reduced_skill_library import FrankaControlApiReducedSkillLibrary
+-from .franka.control_reduced_exampleless import FrankaControlApiReducedExampleless
+-from .franka.nut_assembly_privileged import FrankaControlNutAssemblyPrivilegedApi
+-from .franka.nut_assembly_visual import FrankaControlNutAssemblyVisualApi
+-from .franka.spill_wipe import FrankaControlSpillWipeApi
+-from .franka.spill_wipe_privileged import FrankaControlSpillWipePrivilegedApi
+-from .franka.handover_privileged import FrankaHandoverPrivilegedApi
+-from .franka.handover import FrankaHandoverApi
+-from .franka.handover_reduced import FrankaHandoverApiReduced
+-from .franka.handover_reduced_exampleless import FrankaHandoverApiReducedExampleless
+-from .franka.two_arm_lift import FrankaTwoArmLiftApi
+-from .franka.two_arm_lift_privileged import FrankaTwoArmLiftPrivilegedApi
+-try:
+-    from .franka.libero import FrankaLiberoApi
+-    from .franka.libero_privileged import FrankaLiberoPrivilegedApi
+-    from .franka.libero_reduced import FrankaLiberoApiReduced
+-    from .franka.libero_reduced_skill_library import FrankaLiberoApiReducedSkillLibrary
+-    _libero_available = True
+-except ImportError:
+-    _libero_available = False
+-    print("LIBERO not installed, skipping LIBERO APIs")
+ 
+-register_api("FrankaControlPrivilegedApi", FrankaControlPrivilegedApi)
+-register_api("FrankaControlApi", lambda env: FrankaControlApi(env, use_sam3=True))
+-register_api("FrankaControlApiReduced", FrankaControlApiReduced)
+-register_api(
+-    "FrankaControlApiReducedBimanual", lambda env: FrankaControlApiReduced(env, bimanual=True)
+-)
+-register_api(
+-    "FrankaControlApiReducedExamplelessBimanual", lambda env: FrankaControlApiReducedExampleless(env, bimanual=True)
+-)
+-register_api(
+-    "FrankaControlApiReducedBimanualHandover", lambda env: FrankaControlApiReduced(env, bimanual=True, is_handover=True)
+-)
+-register_api(
+-    "FrankaControlApiReducedExamplelessBimanualHandover", lambda env: FrankaControlApiReducedExampleless(env, bimanual=True, is_handover=True)
+-)
+-register_api(
+-    "FrankaControlApiReducedSpillWipe",
+-    lambda env: FrankaControlApiReduced(env, tcp_offset=[0.0, 0.0, -0.0158]),
+-)
+-register_api("FrankaControlApiReducedExampleless", FrankaControlApiReducedExampleless)
++# SE3 supplies its own environment; avoid importing unrelated Franka stacks.
++import os as _os
++if _os.environ.get("CAPX_EXTERNAL_ENV_ONLY") != "1":
++    from .franka.control import FrankaControlApi
++    from .franka.control_privileged import FrankaControlPrivilegedApi
++    from .franka.control_reduced import FrankaControlApiReduced
++    from .franka.control_reduced_skill_library import FrankaControlApiReducedSkillLibrary
++    from .franka.control_reduced_exampleless import FrankaControlApiReducedExampleless
++    from .franka.nut_assembly_privileged import FrankaControlNutAssemblyPrivilegedApi
++    from .franka.nut_assembly_visual import FrankaControlNutAssemblyVisualApi
++    from .franka.spill_wipe import FrankaControlSpillWipeApi
++    from .franka.spill_wipe_privileged import FrankaControlSpillWipePrivilegedApi
++    from .franka.handover_privileged import FrankaHandoverPrivilegedApi
++    from .franka.handover import FrankaHandoverApi
++    from .franka.handover_reduced import FrankaHandoverApiReduced
++    from .franka.handover_reduced_exampleless import FrankaHandoverApiReducedExampleless
++    from .franka.two_arm_lift import FrankaTwoArmLiftApi
++    from .franka.two_arm_lift_privileged import FrankaTwoArmLiftPrivilegedApi
++    try:
++        from .franka.libero import FrankaLiberoApi
++        from .franka.libero_privileged import FrankaLiberoPrivilegedApi
++        from .franka.libero_reduced import FrankaLiberoApiReduced
++        from .franka.libero_reduced_skill_library import FrankaLiberoApiReducedSkillLibrary
++        _libero_available = True
++    except ImportError:
++        _libero_available = False
++        print("LIBERO not installed, skipping LIBERO APIs")
+ 
+-register_api("FrankaControlApiReducedSkillLibrary", FrankaControlApiReducedSkillLibrary)
+-register_api(
+-    "FrankaControlApiReducedSkillLibraryBimanual",
+-    lambda env: FrankaControlApiReducedSkillLibrary(env, bimanual=True),
+-)
+-register_api(
+-    "FrankaControlApiReducedSkillLibrarySpillWipe",
+-    lambda env: FrankaControlApiReducedSkillLibrary(env, tcp_offset=[0.0, 0.0, -0.0158]),
+-)
+-register_api(
+-    "FrankaControlApiReducedSkillLibraryBimanualHandover",
+-    lambda env: FrankaControlApiReducedSkillLibrary(env, bimanual=True, is_handover=True)
+-)
++    register_api("FrankaControlPrivilegedApi", FrankaControlPrivilegedApi)
++    register_api("FrankaControlApi", lambda env: FrankaControlApi(env, use_sam3=True))
++    register_api("FrankaControlApiReduced", FrankaControlApiReduced)
++    register_api(
++        "FrankaControlApiReducedBimanual", lambda env: FrankaControlApiReduced(env, bimanual=True)
++    )
++    register_api(
++        "FrankaControlApiReducedExamplelessBimanual", lambda env: FrankaControlApiReducedExampleless(env, bimanual=True)
++    )
++    register_api(
++        "FrankaControlApiReducedBimanualHandover", lambda env: FrankaControlApiReduced(env, bimanual=True, is_handover=True)
++    )
++    register_api(
++        "FrankaControlApiReducedExamplelessBimanualHandover", lambda env: FrankaControlApiReducedExampleless(env, bimanual=True, is_handover=True)
++    )
++    register_api(
++        "FrankaControlApiReducedSpillWipe",
++        lambda env: FrankaControlApiReduced(env, tcp_offset=[0.0, 0.0, -0.0158]),
++    )
++    register_api("FrankaControlApiReducedExampleless", FrankaControlApiReducedExampleless)
+ 
+-# For spill wipe environment, we use a custom tcp offset of -0.0158m since panda end effector has been modified by robosuite to have the sponge attachement
+-register_api(
+-    "FrankaControlSpillWipeApi",
+-    lambda env: FrankaControlSpillWipeApi(env, tcp_offset=[0.0, 0.0, -0.0158], use_sam3=True),
+-)
+-register_api(
+-    "FrankaControlSpillWipeApiReduced",
+-    lambda env: FrankaControlApiReduced(
+-        env, tcp_offset=[0.0, 0.0, -0.0158], is_spill_wipe=True
+-    ),
+-)
+-register_api(
+-    "FrankaControlSpillWipePrivilegedApi",
+-    lambda env: FrankaControlSpillWipePrivilegedApi(env, tcp_offset=[0.0, 0.0, -0.0158]),
+-)
+-register_api(
+-    "FrankaControlSpillWipeApiReducedExampleless",
+-    lambda env: FrankaControlApiReducedExampleless(
+-        env, tcp_offset=[0.0, 0.0, -0.0158], is_spill_wipe=True
+-    ),
+-)
++    register_api("FrankaControlApiReducedSkillLibrary", FrankaControlApiReducedSkillLibrary)
++    register_api(
++        "FrankaControlApiReducedSkillLibraryBimanual",
++        lambda env: FrankaControlApiReducedSkillLibrary(env, bimanual=True),
++    )
++    register_api(
++        "FrankaControlApiReducedSkillLibrarySpillWipe",
++        lambda env: FrankaControlApiReducedSkillLibrary(env, tcp_offset=[0.0, 0.0, -0.0158]),
++    )
++    register_api(
++        "FrankaControlApiReducedSkillLibraryBimanualHandover",
++        lambda env: FrankaControlApiReducedSkillLibrary(env, bimanual=True, is_handover=True)
++    )
+ 
+-register_api("FrankaHandoverPrivilegedApi", FrankaHandoverPrivilegedApi)
+-register_api("FrankaHandoverApi", FrankaHandoverApi)
+-register_api("FrankaHandoverApiReduced", FrankaHandoverApiReduced)
+-register_api("FrankaHandoverApiReducedExampleless", FrankaHandoverApiReducedExampleless)
++    # For spill wipe environment, we use a custom tcp offset of -0.0158m since panda end effector has been modified by robosuite to have the sponge attachement
++    register_api(
++        "FrankaControlSpillWipeApi",
++        lambda env: FrankaControlSpillWipeApi(env, tcp_offset=[0.0, 0.0, -0.0158], use_sam3=True),
++    )
++    register_api(
++        "FrankaControlSpillWipeApiReduced",
++        lambda env: FrankaControlApiReduced(
++            env, tcp_offset=[0.0, 0.0, -0.0158], is_spill_wipe=True
++        ),
++    )
++    register_api(
++        "FrankaControlSpillWipePrivilegedApi",
++        lambda env: FrankaControlSpillWipePrivilegedApi(env, tcp_offset=[0.0, 0.0, -0.0158]),
++    )
++    register_api(
++        "FrankaControlSpillWipeApiReducedExampleless",
++        lambda env: FrankaControlApiReducedExampleless(
++            env, tcp_offset=[0.0, 0.0, -0.0158], is_spill_wipe=True
++        ),
++    )
+ 
+-register_api("FrankaTwoArmLiftApi", FrankaTwoArmLiftApi)
+-register_api("FrankaTwoArmLiftPrivilegedApi", FrankaTwoArmLiftPrivilegedApi)
+-register_api(
+-    "FrankaTwoArmLiftApiReduced", 
+-    lambda env: FrankaControlApiReduced(env, bimanual=True, use_sam3=False),
+-)
+-register_api(
+-    "FrankaTwoArmLiftApiReducedExampleless",
+-    lambda env: FrankaControlApiReducedExampleless(env, bimanual=True, use_sam3=False),
+-)
++    register_api("FrankaHandoverPrivilegedApi", FrankaHandoverPrivilegedApi)
++    register_api("FrankaHandoverApi", FrankaHandoverApi)
++    register_api("FrankaHandoverApiReduced", FrankaHandoverApiReduced)
++    register_api("FrankaHandoverApiReducedExampleless", FrankaHandoverApiReducedExampleless)
+ 
+-register_api("FrankaControlNutAssemblyPrivilegedApi", FrankaControlNutAssemblyPrivilegedApi)
+-register_api("FrankaControlNutAssemblyVisualApi", FrankaControlNutAssemblyVisualApi)
+-register_api(
+-    "FrankaControlNutAssemblyApiReduced",
+-    lambda env: FrankaControlApiReduced(env, is_peg_assembly=True),
+-)
+-register_api(
+-    "FrankaControlNutAssemblyApiReducedExampleless",
+-    lambda env: FrankaControlApiReducedExampleless(env, is_peg_assembly=True),
+-)
+-# Register multi-turn variant with multi_turn=True
+-register_api(
+-    "FrankaControlMultiPrivilegedApi",
+-    lambda env: FrankaControlPrivilegedApi(env, multi_turn=True),
+-)
++    register_api("FrankaTwoArmLiftApi", FrankaTwoArmLiftApi)
++    register_api("FrankaTwoArmLiftPrivilegedApi", FrankaTwoArmLiftPrivilegedApi)
++    register_api(
++        "FrankaTwoArmLiftApiReduced", 
++        lambda env: FrankaControlApiReduced(env, bimanual=True, use_sam3=False),
++    )
++    register_api(
++        "FrankaTwoArmLiftApiReducedExampleless",
++        lambda env: FrankaControlApiReducedExampleless(env, bimanual=True, use_sam3=False),
++    )
+ 
+-register_api("FrankaRealReducedSkillLibraryControlApi", lambda env: FrankaControlApiReducedSkillLibrary(env, tcp_offset=[0.0, 0.0, -0.157], real = True))
+-register_api("FrankaRealControlApi", lambda env: FrankaControlApi(env, tcp_offset=[0.0, 0.0, -0.157], real = True))
++    register_api("FrankaControlNutAssemblyPrivilegedApi", FrankaControlNutAssemblyPrivilegedApi)
++    register_api("FrankaControlNutAssemblyVisualApi", FrankaControlNutAssemblyVisualApi)
++    register_api(
++        "FrankaControlNutAssemblyApiReduced",
++        lambda env: FrankaControlApiReduced(env, is_peg_assembly=True),
++    )
++    register_api(
++        "FrankaControlNutAssemblyApiReducedExampleless",
++        lambda env: FrankaControlApiReducedExampleless(env, is_peg_assembly=True),
++    )
++    # Register multi-turn variant with multi_turn=True
++    register_api(
++        "FrankaControlMultiPrivilegedApi",
++        lambda env: FrankaControlPrivilegedApi(env, multi_turn=True),
++    )
+ 
+-try:
+-    from .r1pro.control import R1ProControlApi
+-    register_api("R1ProControlApi", lambda env: R1ProControlApi(env, use_sam3=True))
+-except ImportError:
+-    print("R1Pro not installed, skipping R1Pro APIs")
++    register_api("FrankaRealReducedSkillLibraryControlApi", lambda env: FrankaControlApiReducedSkillLibrary(env, tcp_offset=[0.0, 0.0, -0.157], real = True))
++    register_api("FrankaRealControlApi", lambda env: FrankaControlApi(env, tcp_offset=[0.0, 0.0, -0.157], real = True))
+ 
+-if _libero_available:
+-    register_api("FrankaLiberoPrivilegedApi", FrankaLiberoPrivilegedApi)
+-    register_api("FrankaLiberoApi", lambda env: FrankaLiberoApi(env, use_sam3=True))
+-    register_api("FrankaLiberoApiReduced", FrankaLiberoApiReduced)
+-    register_api("FrankaLiberoApiReducedSkillLibrary", FrankaLiberoApiReducedSkillLibrary)
+\ No newline at end of file
++    try:
++        from .r1pro.control import R1ProControlApi
++        register_api("R1ProControlApi", lambda env: R1ProControlApi(env, use_sam3=True))
++    except ImportError:
++        print("R1Pro not installed, skipping R1Pro APIs")
++
++    if _libero_available:
++        register_api("FrankaLiberoPrivilegedApi", FrankaLiberoPrivilegedApi)
++        register_api("FrankaLiberoApi", lambda env: FrankaLiberoApi(env, use_sam3=True))
++        register_api("FrankaLiberoApiReduced", FrankaLiberoApiReduced)
++        register_api("FrankaLiberoApiReducedSkillLibrary", FrankaLiberoApiReducedSkillLibrary)
+\ No newline at end of file

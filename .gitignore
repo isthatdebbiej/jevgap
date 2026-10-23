@@ -26,3 +26,9 @@ Thumbs.db
 
 /local-config/
 /.venv-tasks/
+
+# Local ACT runtime and credentials
+openmodels.txt
+/.venv-linux/
+/act-runs/
+/act-model-validation*/

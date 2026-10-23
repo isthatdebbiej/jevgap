@@ -1,0 +1,53 @@
+{
+  "name": "classify-objects-by-language",
+  "instruction": "Put all figurines into the left blue bin, all watches into the middle red bin, and all toy peppers into the right yellow bin. Return both arms to origin.",
+  "reset_instruction": "Three toy peppers (red/green/yellow), two figurines, three watches (red-band/yellow-band/black-band); left blue, middle red, right yellow bins. Record matched initial layout and neutral poses for both arms. Confirm ACT start pose, all three camera views, open empty grippers and station stop control. Reset to the identical scene between policies.  Assignment 4: Put all figurines into the left blue bin, all watches into the middle red bin, and all toy peppers into the right yellow bin. Return both arms to origin.",
+  "success_question": "3 complete categories, each in its instructed bin, with every category member inside, no foreign objects and grippers open. All objects settled and arms at origin. Every qualifying object must be released, settled for 2 seconds and unsupported by a gripper. Full success also requires both arms at the recorded origin.",
+  "rubric": {
+    "version": "se3-interval-v1",
+    "source": "https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380",
+    "variant": "se3-physical",
+    "comparable_to_robodojo": false,
+    "milestones": [
+      {
+        "points": 0,
+        "criterion": "No qualifying milestone reached."
+      },
+      {
+        "points": 10,
+        "criterion": "1 complete categories, each in its instructed bin, with every category member inside, no foreign objects and grippers open."
+      },
+      {
+        "points": 40,
+        "criterion": "2 complete categories, each in its instructed bin, with every category member inside, no foreign objects and grippers open."
+      },
+      {
+        "points": 100,
+        "criterion": "3 complete categories, each in its instructed bin, with every category member inside, no foreign objects and grippers open. All objects settled and arms at origin."
+      }
+    ],
+    "intervals": [
+      {
+        "phases": [
+          "Did it identify and acquire every member of category 1 using the instructed mapping?",
+          "Did it carry all objects of category 1 over the instructed bin?",
+          "Did it release all category 1 members fully inside, verify completeness and no contamination? Preserve earlier qualifying units."
+        ]
+      },
+      {
+        "phases": [
+          "Did it identify and acquire every member of category 2 using the instructed mapping?",
+          "Did it carry all objects of category 2 over the instructed bin?",
+          "Did it release all category 2 members fully inside, verify completeness and no contamination? Preserve earlier qualifying units."
+        ]
+      },
+      {
+        "phases": [
+          "Did it identify and acquire every member of category 3 using the instructed mapping?",
+          "Did it carry all objects of category 3 over the instructed bin?",
+          "Did it release all category 3 members fully inside, verify completeness and no contamination? Verify all completed units and return both arms to origin."
+        ]
+      }
+    ]
+  }
+}

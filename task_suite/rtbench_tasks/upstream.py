@@ -35,10 +35,15 @@ def digest(path):
 def load_profile(experiment):
     path = experiment.resolve(experiment.data["harness_config"])
     data = read_json(path)
-    allowed = {"schema_version", "repo_root", "revision", "python", "timeout_s", "task_config_pattern", "evaluation_backend"}
+    allowed = {"schema_version", "repo_root", "revision", "python", "timeout_s", "task_config_pattern", "evaluation_backend", "model_config_file"}
     if not isinstance(data, dict) or set(data) - allowed or data.get("schema_version") != 1:
         raise ValueError("invalid upstream profile fields or schema_version")
     positive(data.get("timeout_s", 600), "upstream.timeout_s")
+    if data.get("model_config_file"):
+        model_path = Path(data["model_config_file"]).expanduser()
+        data["model_config_file"] = str(model_path if model_path.is_absolute() else (path.parent / model_path).resolve())
+        if not Path(data["model_config_file"]).is_file():
+            raise ValueError("upstream.model_config_file does not exist")
     if data.get("evaluation_backend") not in {"se3", "simulation"}:
         raise ValueError("upstream.evaluation_backend must be se3 or simulation")
     for name in ("repo_root", "python"):
@@ -252,6 +257,8 @@ def run_trial(experiment, task, seed, repetition, folder, *, live=False):
                "limits": e.limits, "evaluation_backend": profile["evaluation_backend"],
                "source": TASKS[task].source, "output": str(folder),
                "binding_file": str(binding_path), "repo_root": profile["repo_root"]}
+    if profile.get("model_config_file"):
+        request["model_config_file"] = profile["model_config_file"]
     # Scorer truth is deliberately absent from the child request. The trusted
     # native environment/evaluator must export independently measured evidence.
     write_json(folder / "request.json", request)
@@ -269,6 +276,11 @@ def run_trial(experiment, task, seed, repetition, folder, *, live=False):
     env = dict(os.environ)
     # Avoid injecting the GaP interpreter's dependencies into Python 3.11 upstreams.
     env.pop("PYTHONPATH", None)
+    env.pop("JEVGAP_ACT_LIVE", None)
+    if e.data.get("act_config"):
+        if e.harness != "cap" or profile["evaluation_backend"] != "se3":
+            raise ValueError("ACT requires CaP with evaluation_backend=se3")
+        env["JEVGAP_ACT_LIVE"] = "1"
     env.update(JEVGAP_REQUEST=str(folder / "request.json"), JEVGAP_OUTPUT=str(folder), PYTHONIOENCODING="utf-8")
     kwargs = {"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW} if os.name == "nt" else {"start_new_session": True}
     started = time.monotonic()

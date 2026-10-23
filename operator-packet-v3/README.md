@@ -1,0 +1,1 @@
+Use ../task_suite/OPERATOR_HANDOFF.md for the complete handoff. This packet is ready for supervised commissioning; commissioning.json is deliberately unverified. Do not interpret the planned episodes or scoring templates as results.

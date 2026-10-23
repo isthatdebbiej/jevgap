@@ -1,0 +1,64 @@
+{
+  "name": "cover-blocks",
+  "instruction": "Cover all three blocks from left to right and remember their colors. Then uncover green, light blue and dark blue in that order, keeping the cups upright. Return both arms to origin.",
+  "reset_instruction": "Green, light-blue, dark-blue blocks; three identical yellow opaque cups. Balance all six block-position permutations across matched pairs; record color positions before covering without exposing that record to policy. Record matched initial layout and neutral poses for both arms. Confirm ACT start pose, all three camera views, open empty grippers and station stop control. Reset to the identical scene between policies. ",
+  "success_question": "Valid covering followed by green/light-blue/dark-blue reveal order, upright cups, arms at origin. Every qualifying object must be released, settled for 2 seconds and unsupported by a gripper. Full success also requires both arms at the recorded origin.",
+  "rubric": {
+    "version": "se3-interval-v1",
+    "source": "https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380",
+    "variant": "se3-physical",
+    "comparable_to_robodojo": false,
+    "milestones": [
+      {
+        "points": 0,
+        "criterion": "No qualifying milestone reached."
+      },
+      {
+        "points": 5,
+        "criterion": "All three blocks hidden by upright cups, covered in left-to-right order."
+      },
+      {
+        "points": 15,
+        "criterion": "After valid covering, green uncovered first; both blue blocks remain covered."
+      },
+      {
+        "points": 30,
+        "criterion": "Green then light blue uncovered; dark blue remains covered."
+      },
+      {
+        "points": 100,
+        "criterion": "Valid covering followed by green/light-blue/dark-blue reveal order, upright cups, arms at origin."
+      }
+    ],
+    "intervals": [
+      {
+        "phases": [
+          "Did it acquire the cups in left-to-right action order without disturbing blocks?",
+          "Did it transport each cup over its corresponding block?",
+          "Did it hide all blocks under upright cups while retaining their color positions?"
+        ]
+      },
+      {
+        "phases": [
+          "Did it select the cup hiding green from memory?",
+          "Did it lift and park that cup upright without exposing a later target?",
+          "Did it reveal green in the required order while preserving remaining covers?"
+        ]
+      },
+      {
+        "phases": [
+          "Did it select the cup hiding light blue from memory?",
+          "Did it lift and park that cup upright without exposing a later target?",
+          "Did it reveal light blue in the required order while preserving remaining covers?"
+        ]
+      },
+      {
+        "phases": [
+          "Did it select the cup hiding dark blue from memory?",
+          "Did it lift and park that cup upright without exposing a later target?",
+          "Did it reveal dark blue in the required order while preserving remaining covers? Verify full order and return arms to origin."
+        ]
+      }
+    ]
+  }
+}

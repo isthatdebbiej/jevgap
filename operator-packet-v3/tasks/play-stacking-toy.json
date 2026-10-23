@@ -1,0 +1,75 @@
+{
+  "name": "play-stacking-toy",
+  "instruction": "Place every piece onto its matching peg: purple circle, blue triangle, green square, orange square and red square. Complete all five groups. Return both arms to origin.",
+  "reset_instruction": "Five-peg toy with 15 pieces: 1 purple circle, 2 blue triangles, 3 green squares, 4 orange squares, 5 red squares. Remove every piece before rollout and scatter without hiding peg base. Record matched initial layout and neutral poses for both arms. Confirm ACT start pose, all three camera views, open empty grippers and station stop control. Reset to the identical scene between policies. Quality expands to five intervals 0/10/25/45/70/100, each 30/30/40; not the four-group original.",
+  "success_question": "5 entire matching peg groups completed, all pieces seated on base/stack and released. All five complete, arms at origin. Every qualifying object must be released, settled for 2 seconds and unsupported by a gripper. Full success also requires both arms at the recorded origin.",
+  "rubric": {
+    "version": "se3-interval-v1",
+    "source": "https://knowing-wandflower-7a9.notion.site/Task-Design-3e603e88cc6d81fcae8ae3167324b380",
+    "variant": "se3-extended-five-groups",
+    "comparable_to_robodojo": false,
+    "milestones": [
+      {
+        "points": 0,
+        "criterion": "No qualifying milestone reached."
+      },
+      {
+        "points": 10,
+        "criterion": "1 entire matching peg groups completed, all pieces seated on base/stack and released."
+      },
+      {
+        "points": 25,
+        "criterion": "2 entire matching peg groups completed, all pieces seated on base/stack and released."
+      },
+      {
+        "points": 45,
+        "criterion": "3 entire matching peg groups completed, all pieces seated on base/stack and released."
+      },
+      {
+        "points": 70,
+        "criterion": "4 entire matching peg groups completed, all pieces seated on base/stack and released."
+      },
+      {
+        "points": 100,
+        "criterion": "5 entire matching peg groups completed, all pieces seated on base/stack and released. All five complete, arms at origin."
+      }
+    ],
+    "intervals": [
+      {
+        "phases": [
+          "Did it identify and retain every piece of scored group 1?",
+          "Did it transport each piece of group 1 above the correct peg and align its hole?",
+          "Did it seat and release every piece to complete group 1? Preserve earlier qualifying units."
+        ]
+      },
+      {
+        "phases": [
+          "Did it identify and retain every piece of scored group 2?",
+          "Did it transport each piece of group 2 above the correct peg and align its hole?",
+          "Did it seat and release every piece to complete group 2? Preserve earlier qualifying units."
+        ]
+      },
+      {
+        "phases": [
+          "Did it identify and retain every piece of scored group 3?",
+          "Did it transport each piece of group 3 above the correct peg and align its hole?",
+          "Did it seat and release every piece to complete group 3? Preserve earlier qualifying units."
+        ]
+      },
+      {
+        "phases": [
+          "Did it identify and retain every piece of scored group 4?",
+          "Did it transport each piece of group 4 above the correct peg and align its hole?",
+          "Did it seat and release every piece to complete group 4? Preserve earlier qualifying units."
+        ]
+      },
+      {
+        "phases": [
+          "Did it identify and retain every piece of scored group 5?",
+          "Did it transport each piece of group 5 above the correct peg and align its hole?",
+          "Did it seat and release every piece to complete group 5? Verify all completed units and return both arms to origin."
+        ]
+      }
+    ]
+  }
+}

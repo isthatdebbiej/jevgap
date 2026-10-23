@@ -1,0 +1,6 @@
+{
+  "name": "precision-memory-correction",
+  "instruction": "Follow the current cue; retain hidden instructions in your own episode memory.",
+  "reset_instruction": "Prepare the five A/B/C/D/E arrow-labelled cubes and board targets as specified in the precision-memory proposal. Confirm ACT start pose and matched layout.",
+  "success_question": "Were all 11 transfers correct in sequence, target, yaw and stability, without early task-cube motion or assistance?"
+}

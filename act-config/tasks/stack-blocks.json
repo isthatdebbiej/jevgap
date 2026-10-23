@@ -1,0 +1,42 @@
+{
+  "name": "stack-blocks",
+  "instruction": "Stack three blocks into one stable tower. Return both arms to origin.",
+  "reset_instruction": "Three differently textured blocks. Record matched initial layout and neutral poses for both arms. Confirm ACT start pose, all three camera views, open empty grippers and station stop control. Reset to the identical scene between policies. Not in the ten-task Notion proposal. Quality is a declared local adaptation.",
+  "success_question": "All three in one stable stack, released and arms at origin. Every qualifying object must be released, settled for 2 seconds and unsupported by a gripper. Full success also requires both arms at the recorded origin.",
+  "rubric": {
+    "version": "se3-interval-v1",
+    "source": "https://robodojo-benchmark.com/doc/sim-tasks/stack-blocks/",
+    "variant": "local-supplemental",
+    "comparable_to_robodojo": false,
+    "milestones": [
+      {
+        "points": 0,
+        "criterion": "No qualifying milestone reached."
+      },
+      {
+        "points": 15,
+        "criterion": "Two objects stably stacked, gripper open."
+      },
+      {
+        "points": 100,
+        "criterion": "All three in one stable stack, released and arms at origin."
+      }
+    ],
+    "intervals": [
+      {
+        "phases": [
+          "Did it acquire the next object for stacking step 1?",
+          "Did it transport and align the retained object above its supporting object?",
+          "Did it release a stable upright stack without disturbing its support? Preserve earlier qualifying units."
+        ]
+      },
+      {
+        "phases": [
+          "Did it acquire the next object for stacking step 2?",
+          "Did it transport and align the retained object above its supporting object?",
+          "Did it release a stable upright stack without disturbing its support? Verify all completed units and return both arms to origin."
+        ]
+      }
+    ]
+  }
+}

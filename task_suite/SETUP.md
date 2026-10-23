@@ -107,7 +107,22 @@ is implemented; reconcile the station and use a new output directory.
 
 ## Native GaP model settings and budgets
 
-The implemented live provider is `openai-responses`, with strict structured
+Start with `se3-openmodels.local.json`. `init` creates these additional profiles while retaining the existing
+OpenAI/Astra profiles. The `costplusiq` provider uses
+`https://api.costplusiq.com/v1/chat/completions` with `Qwen/Qwen3.8-27B` initially.
+Set `model.key_file` to your private API key file; the key is read at request time
+and never stored in the experiment. Windows paths must use JSON escaping or
+forward slashes. In WSL, use the corresponding `/mnt/c/...` path.
+
+Swap `model_id` to `nvidia/Qwen3.8-Flash-Next-NVFP4` or
+`nvidia/Kimi-K3-NVFP4` to use the other supplied models. Each starts with
+`reasoning_effort: "low"`; optional `enable_thinking: false` disables reasoning.
+The output limit includes reasoning and cannot exceed 32,768 for CostPlusIQ.
+All variants share one dedicated CostPlusIQ reservation ledger per study.
+Provider details: [CostPlusIQ API reference](https://costplusiq.com/api).
+
+`openai-responses` remains available for Astra using its original endpoint,
+credentials and ledger. Both providers require strict structured
 `action` + `memory` output. Set an exact available model ID. If the provider
 returns a dated snapshot name for an alias, explicitly list acceptable IDs in
 `accepted_response_models`. An unexpected model, refusal, incomplete output,

@@ -1,0 +1,61 @@
+{
+  "controller": "SE3 ACT Harness",
+  "model": "Qwen/Qwen3.8-27B",
+  "station": "se3-labs-yam-2",
+  "address": "100.107.161.92:7443",
+  "software_ready": true,
+  "task_reconciliation_complete": true,
+  "full_scoring_implemented": true,
+  "ready_to_invite_operator_for_commissioning": true,
+  "physical_commissioning_complete": false,
+  "ready_for_scored_physical_collection": false,
+  "operator_contacted": false,
+  "physical_eval_launched": false,
+  "max_rollout_seconds": 450,
+  "max_model_decisions": 52,
+  "budget": {
+    "budget_usd": 230,
+    "prior_reservations_usd": 0.5,
+    "plan_maximum_additional_reservations_usd": 228.8,
+    "maximum_total_reservations_usd": 229.3,
+    "remaining_after_maximum_usd": 0.7,
+    "episodes": 44,
+    "decisions_per_episode": 52,
+    "provider_billing_estimate": false
+  },
+  "checks": {
+    "windows_regression": {
+      "tests": 106,
+      "skipped": 1,
+      "ok": true
+    },
+    "linux_act": {
+      "tests": 25,
+      "ok": true
+    },
+    "native_fake_act_two_turn": true,
+    "sdk_base_profiles": 17,
+    "matched_pairs": 22,
+    "planned_episodes": 44
+  },
+  "packet": "operator-packet-v3",
+  "remaining": [
+    "Operator-observed commissioning and calibration before scored collection"
+  ],
+  "source_sha256": {
+    "task_suite\\rtbench_tasks\\act_agent.py": "64a1b120dc69dc784fa11c6c1173acbbc45acaed88f10c022c5b865f44e9ea5b",
+    "task_suite\\rtbench_tasks\\act_code.py": "bf6694e07b482abc737dc6c9998ff4b9c46208dd7ac6c37e0874eb375c9c168e",
+    "task_suite\\rtbench_tasks\\act_cues.py": "e9e5e22f27a069090cca06fd9b769aa7b8ca8e8acf068dc5b596c1d0719eedfd",
+    "task_suite\\rtbench_tasks\\act_fixture.py": "34e4643d0b73ea28e0cd23543cbd75f60fc6e288a0bbc8df60c430f4bf632b9b",
+    "task_suite\\rtbench_tasks\\act_gap.py": "f4ff924a172f9760cd2a8675e93691d979db4b51067f3e1221108c41b2ae8edc",
+    "task_suite\\rtbench_tasks\\act_native.py": "171dae7d4f3c758835ee105295a9cf4e4bec4fd7dfeb8ed10e170dbb4ff78774",
+    "task_suite\\rtbench_tasks\\act_precision_score.py": "f37b3c21436ae1fe9c0e4a7b94df4f92d5fa494ebf05fc6caf61504b19c5629d",
+    "task_suite\\rtbench_tasks\\act_prepare.py": "78394f3dc2392ad507aa5a163960223a0874387b5c6fb3469ef12a86cb2391a2",
+    "task_suite\\rtbench_tasks\\act_provenance.py": "d34a58f9839c797ea9579463033c3e571c1dcade9b5c10fb72a3bc89e50838aa",
+    "task_suite\\rtbench_tasks\\act_run.py": "e15318f2bd4de7ae9d50566bc153f6796e925e7d86aca1bf5e6bb380c27f3c0a",
+    "task_suite\\rtbench_tasks\\act_scoring.py": "6b44a48aecdbfab610f1e5b380795421f9412c086b64c8cf8986a4179811bc6d",
+    "task_suite\\rtbench_tasks\\act_service.py": "4efa5288fb79d5dfe6041ee947cb0496827b04df44cfd3f5dcaedeb75a8646f3",
+    "task_suite\\rtbench_tasks\\responses.py": "85d6fd972b51f8497f6ca781d2076f77603068fc62e9aec8007d677201ff3926",
+    "task_suite\\rtbench_tasks\\precision_memory.py": "6056967562fa06bb506fa910be500b147b7d42597e66b75e3c061a988ccda0cd"
+  }
+}

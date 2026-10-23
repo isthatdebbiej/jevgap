@@ -1,5 +1,19 @@
 # Configuration
 
+## Open models for initial task-suite runs
+
+Use `se3-openmodels.local.json` with provider `costplusiq`, model
+`Qwen/Qwen3.8-27B` and endpoint `https://api.costplusiq.com/v1/chat/completions`.
+Credentials are read from `model.key_file` at request time. The other available
+model IDs are `nvidia/Qwen3.8-Flash-Next-NVFP4` and `nvidia/Kimi-K3-NVFP4`.
+The adapter validates structured action/memory JSON and preserves the shared
+reservation ledger, explicit live mode and no-retry behavior.
+
+OpenAI/Astra remains supported through `openai-responses` and its existing
+configuration. The historical Astra/Jev executor experiment below is unchanged.
+See [model setup](../task_suite/SETUP.md#model-settings-and-budgets) and the
+[CostPlusIQ API reference](https://costplusiq.com/api).
+
 ## Four-harness task suite
 
 Select GaP, CaP-X, ASPIRE or ENPIRE through an experiment
@@ -8,7 +22,7 @@ command, then choose the matching file for each batch:
 
 | Harness | Generated experiment | Mode | Harness-specific settings |
 |---|---|---|---|
-| GaP | `replay.json` or `se3.local.json` | `replay` or `se3` | GaP checkout; for SE3, station/driver and Responses model configuration |
+| GaP | `replay.json` or `se3.local.json` | `replay` or `se3` | GaP checkout; for SE3, station/driver and model provider configuration |
 | CaP-X | `cap.local.json` | `upstream` | Upstream profile plus native task YAML bindings |
 | ASPIRE | `aspire.local.json` | `upstream` | Upstream profile plus saved programs and native Hydra task configuration |
 | ENPIRE | `enpire.local.json` | `upstream` | Upstream profile plus environment/policy factories and their configuration |
@@ -20,7 +34,7 @@ blockers without launching native runners. Start with [harness setup](../task_su
 for the commands, profile fields and independent evidence contract.
 
 [Coordinator installation](../task_suite/SETUP.md) also documents the native GaP
-station/model configuration. Its Responses budget ledger applies to native GaP;
+station/model configuration. Its model budget ledger applies to native GaP;
 upstream workflows use their own model settings and spending controls. Match and
 record those controls as required by the [testing plan](../task_suite/TESTING_PLAN.md).
 
